@@ -140,7 +140,7 @@
 <style>
 	.page {
 		min-height: 100vh;
-		color: #1e293b;
+		color: var(--text);
 		font-family: 'IBM Plex Mono', 'SF Mono', 'Cascadia Code', Consolas, monospace;
 		max-width: 600px;
 		margin: 0 auto;
@@ -153,7 +153,7 @@
 	}
 
 	.back-link {
-		color: #059669;
+		color: var(--accent);
 		font-size: 0.85rem;
 		display: inline-block;
 		margin-bottom: 1.5rem;
@@ -164,7 +164,7 @@
 	}
 
 	.comment {
-		color: #94a3b8;
+		color: var(--subtle);
 		font-size: 0.8rem;
 		margin: 0 0 0.25rem;
 	}
@@ -177,11 +177,11 @@
 		font-size: 2rem;
 		font-weight: 700;
 		margin: 0.25rem 0 0.5rem;
-		color: #1e293b;
+		color: var(--text);
 	}
 
 	.pkg-type {
-		color: #64748b;
+		color: var(--muted);
 		font-size: 0.9rem;
 		margin: 0;
 	}
@@ -193,7 +193,7 @@
 	.replacement {
 		padding-bottom: 1.5rem;
 		margin-bottom: 1.5rem;
-		border-bottom: 1px solid #e2e8f0;
+		border-bottom: 1px solid var(--border);
 	}
 
 	.replacement:last-child {
@@ -203,14 +203,14 @@
 	.replacement-id {
 		font-size: 1.15rem;
 		font-weight: 600;
-		color: #059669;
+		color: var(--accent);
 		margin: 0 0 0.5rem;
 	}
 
 	.badge {
 		display: inline-block;
-		background: #f1f5f9;
-		color: #059669;
+		background: var(--code-bg);
+		color: var(--accent);
 		padding: 0.15rem 0.5rem;
 		font-size: 0.7rem;
 		border-radius: 4px;
@@ -219,33 +219,33 @@
 
 	.doc-link {
 		font-size: 0.85rem;
-		color: #64748b;
+		color: var(--muted);
 		margin: 0.5rem 0;
 	}
 
 	.doc-link a {
-		color: #059669;
+		color: var(--accent);
 		text-decoration: underline;
 	}
 
 	.doc-link a:hover {
-		color: #047857;
+		color: var(--accent-hover);
 	}
 
 	.teal {
-		color: #059669;
+		color: var(--accent);
 		font-weight: 600;
 	}
 
 	.description {
-		color: #64748b;
+		color: var(--muted);
 		font-size: 0.9rem;
 		line-height: 1.7;
 		margin: 0.5rem 0;
 	}
 
 	.verdict {
-		color: #059669;
+		color: var(--accent);
 		font-style: italic;
 		font-size: 0.85rem;
 		margin: 0.75rem 0 0;
@@ -256,8 +256,8 @@
 	}
 
 	pre {
-		background: #f1f5f9;
-		border: 1px solid #e2e8f0;
+		background: var(--code-bg);
+		border: 1px solid var(--border);
 		border-radius: 6px;
 		padding: 1rem;
 		overflow-x: auto;
@@ -269,7 +269,7 @@
 		font-size: 0.8rem;
 		white-space: pre-wrap;
 		word-break: break-word;
-		color: #1e293b;
+		color: var(--text);
 	}
 
 	.engine-filters {
@@ -280,8 +280,8 @@
 
 	.filter-btn {
 		background: none;
-		color: #059669;
-		border: 1px solid #059669;
+		color: var(--accent);
+		border: 1px solid var(--accent);
 		padding: 0.3rem 0.7rem;
 		font-family: inherit;
 		font-size: 0.75rem;
@@ -293,12 +293,12 @@
 	}
 
 	.filter-btn:hover {
-		background: #05966915;
+		background: var(--accent-tint);
 	}
 
 	.filter-btn.active {
-		background: #059669;
-		color: #fff;
+		background: var(--accent);
+		color: var(--bg);
 	}
 
 	.engine-list {
@@ -312,7 +312,7 @@
 
 	.engine-list li {
 		font-size: 0.85rem;
-		color: #1e293b;
+		color: var(--text);
 	}
 
 	/* Not found */
@@ -323,7 +323,7 @@
 	.not-found h1 {
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: #1e293b;
+		color: var(--text);
 		margin: 0.25rem 0 1.5rem;
 	}
 </style>

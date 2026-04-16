@@ -8,8 +8,7 @@
 <div class="page">
 	<div class="container">
 		<div class="title">
-			<span class="namespace">mr</span>
-			<span class="method">.e18e</span>
+			<span class="namespace">mr</span><span class="method">.e18e</span>
 		</div>
 
 		<p class="params">
@@ -63,23 +62,18 @@
 
 	.title {
 		margin-bottom: 0.5rem;
+		font-size: 3.5rem;
+		line-height: 1;
 	}
 
 	.namespace {
-		display: block;
-		color: #94a3b8;
-		font-size: 0.875rem;
+		color: var(--subtle);
 		font-weight: 400;
-		line-height: 1;
-		margin-bottom: 0.125rem;
 	}
 
 	.method {
-		display: block;
-		color: #1e293b;
-		font-size: 3.5rem;
+		color: var(--text);
 		font-weight: 700;
-		line-height: 1;
 	}
 
 	.params {
@@ -88,15 +82,15 @@
 	}
 
 	.paren {
-		color: #94a3b8;
+		color: var(--subtle);
 	}
 
 	.param {
-		color: #059669;
+		color: var(--accent);
 	}
 
 	.tagline {
-		color: #64748b;
+		color: var(--muted);
 		font-size: 0.875rem;
 		margin: 1.5rem 0 0;
 		line-height: 1.5;
@@ -106,22 +100,22 @@
 		display: flex;
 		align-items: center;
 		margin-top: 1.5rem;
-		border: 1px solid #cbd5e1;
+		border: 1px solid var(--border-strong);
 		border-radius: 6px;
-		background: #fff;
+		background: var(--input-bg);
 		overflow: hidden;
 		transition: border-color 0.15s;
 	}
 
 	.search-form:focus-within {
-		border-color: #059669;
+		border-color: var(--accent);
 	}
 
 	input {
 		background: transparent;
 		border: none;
 		outline: none;
-		color: #1e293b;
+		color: var(--text);
 		font-family: inherit;
 		font-size: 0.9375rem;
 		width: 100%;
@@ -129,13 +123,13 @@
 	}
 
 	input::placeholder {
-		color: #94a3b8;
+		color: var(--subtle);
 	}
 
 	.submit-btn {
 		background: none;
 		border: none;
-		color: #059669;
+		color: var(--accent);
 		font-family: inherit;
 		font-size: 1.125rem;
 		padding: 0.625rem 0.75rem;
@@ -145,7 +139,7 @@
 	}
 
 	.submit-btn:hover {
-		color: #047857;
+		color: var(--accent-hover);
 	}
 
 	.examples {
@@ -153,7 +147,7 @@
 	}
 
 	.examples-header {
-		color: #94a3b8;
+		color: var(--subtle);
 		font-size: 0.8125rem;
 		display: block;
 		margin-bottom: 0.5rem;
@@ -166,7 +160,7 @@
 	}
 
 	.examples-list a {
-		color: #059669;
+		color: var(--accent);
 		text-decoration: none;
 		font-size: 0.875rem;
 		padding: 0.125rem 0;
@@ -179,7 +173,7 @@
 	.powered-by {
 		display: block;
 		margin-top: 3rem;
-		color: #94a3b8;
+		color: var(--subtle);
 		font-size: 0.75rem;
 		text-decoration: none;
 	}
