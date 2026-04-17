@@ -47,7 +47,23 @@
 
 html,
 body {
-	background: var(--bg);
+	background:
+		radial-gradient(
+			ellipse 80% 60% at 10% 20%,
+			color-mix(in srgb, var(--accent) 6%, transparent),
+			transparent
+		),
+		radial-gradient(
+			ellipse 60% 80% at 90% 80%,
+			color-mix(in srgb, var(--accent) 4%, transparent),
+			transparent
+		),
+		radial-gradient(
+			ellipse 50% 50% at 50% 50%,
+			color-mix(in srgb, var(--accent) 3%, transparent),
+			transparent
+		),
+		var(--bg);
 	color: var(--text);
 }
 
