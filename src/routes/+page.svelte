@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { search } from './search.remote';
 
 	const examples = ['is-number', 'left-pad', 'is-array', 'object-assign'];
 </script>
@@ -19,13 +19,18 @@
 
 		<p class="tagline">type a package name. we'll tell you what you don't need.</p>
 
-		<form {...search} class="search-form">
-			<input
-				placeholder="e.g. is-number"
-				autocomplete="off"
-				spellcheck="false"
-				{...search.fields.package.as('text')}
-			/>
+		<form
+			onsubmit={(e) => {
+				e.preventDefault();
+				const form_data = new FormData(e.currentTarget);
+				const package_name = form_data.get('package');
+				if (package_name) {
+					goto(resolve('/[package]', { package: encodeURIComponent(package_name.toString()) }));
+				}
+			}}
+			class="search-form"
+		>
+			<input placeholder="e.g. is-number" autocomplete="off" spellcheck="false" name="package" />
 			<button type="submit" class="submit-btn" aria-label="Search">→</button>
 		</form>
 
@@ -33,7 +38,7 @@
 			<span class="examples-header">// examples</span>
 			<div class="examples-list">
 				{#each examples as name (name)}
-					<a href={resolve('/[package]', { package: name })}>· {name}</a>
+					<a href={resolve('/[package]', { package: encodeURIComponent(name) })}>· {name}</a>
 				{/each}
 			</div>
 		</div>

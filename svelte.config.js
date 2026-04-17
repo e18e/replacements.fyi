@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-static';
 import { all } from 'module-replacements';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -11,7 +11,9 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		experimental: { remoteFunctions: true },
-		prerender: { entries: Object.keys(all.mappings).map((key) => `/${encodeURIComponent(key)}`) }
+		prerender: {
+			entries: Object.keys(all.mappings).map((key) => `/${encodeURIComponent(key)}`)
+		}
 	}
 };
 
