@@ -16,7 +16,15 @@
 			class:active={theme.pref === opt.value}
 			aria-label="Use {opt.value} theme"
 			aria-pressed={theme.pref === opt.value}
-			onclick={() => theme.set(opt.value)}
+			onclick={() => {
+				if (!document.startViewTransition) {
+					theme.set(opt.value);
+					return;
+				}
+				document.startViewTransition(() => {
+					theme.set(opt.value);
+				});
+			}}
 		>
 			{opt.label}
 		</button>
@@ -33,7 +41,6 @@
 		border: 1px solid var(--border);
 		border-radius: 6px;
 		overflow: hidden;
-		font-family: 'IBM Plex Mono', 'SF Mono', 'Cascadia Code', Consolas, monospace;
 		background: var(--surface);
 	}
 
