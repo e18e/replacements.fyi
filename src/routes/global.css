@@ -37,6 +37,11 @@
 		--accent-tint: color-mix(in srgb, var(--accent) 15%, transparent);
 		--code-bg: #27272a;
 		--input-bg: #27272a;
+		.shiki,
+		.shiki span {
+			color: var(--shiki-dark) !important;
+			background-color: var(--shiki-dark-bg) !important;
+		}
 	}
 }
 
@@ -53,6 +58,11 @@
 	--accent-tint: color-mix(in srgb, var(--accent) 15%, transparent);
 	--code-bg: #27272a;
 	--input-bg: #27272a;
+	.shiki,
+	.shiki span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--shiki-dark-bg) !important;
+	}
 }
 
 html,
