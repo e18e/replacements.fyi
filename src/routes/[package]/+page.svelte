@@ -29,8 +29,6 @@
 	];
 	const runtime_engines = ['nodejs', 'deno', 'bun'];
 
-	let selected_category: 'browsers' | 'runtimes' | 'other' | null = $state(null);
-
 	function get_url(url: KnownUrl): string {
 		if (typeof url === 'string') return url;
 		if (url.type === 'mdn') return `https://developer.mozilla.org/en-US/docs/${url.id}`;
@@ -46,20 +44,18 @@
 		return `Node.js docs`;
 	}
 
-	function filtered_engines(engines: EngineConstraint[] | undefined) {
+	function categorized_engines(engines: EngineConstraint[] | undefined) {
 		if (!engines) return [];
-		if (!selected_category) return engines;
-		if (selected_category === 'other') {
-			return engines.filter(
-				(e) => !browser_engines.includes(e.engine) && !runtime_engines.includes(e.engine)
-			);
-		}
-		const cat_engines = selected_category === 'browsers' ? browser_engines : runtime_engines;
-		return engines.filter((e) => cat_engines.includes(e.engine));
-	}
-
-	function toggle_category(cat: 'browsers' | 'runtimes' | 'other') {
-		selected_category = selected_category === cat ? null : cat;
+		const browsers = engines.filter((e) => browser_engines.includes(e.engine));
+		const runtimes = engines.filter((e) => runtime_engines.includes(e.engine));
+		const other = engines.filter(
+			(e) => !browser_engines.includes(e.engine) && !runtime_engines.includes(e.engine)
+		);
+		return [
+			{ label: 'browsers', engines: browsers },
+			{ label: 'runtimes', engines: runtimes },
+			{ label: 'other', engines: other }
+		].filter((c) => c.engines.length > 0);
 	}
 </script>
 
@@ -105,20 +101,19 @@
 						{/if}
 						{#if data.engines && data.engines.length > 0}
 							<p class="comment">// engine support</p>
-							<div class="engine-filters">
-								{#each ['browsers', 'runtimes', 'other'] as const as cat (cat)}
-									<button
-										class="filter-btn"
-										class:active={selected_category === cat}
-										onclick={() => toggle_category(cat)}>{cat}</button
-									>
+							{@const categories = categorized_engines(data.engines)}
+							<div class="engine-tabs" style:--tab-count={categories.length}>
+								{#each categories as cat, i (cat.label)}
+									<details name="engine-category-{key}" class="engine-tab" open={i === 0}>
+										<summary class="tab-btn" style:--n={i + 1}>{cat.label}</summary>
+										<ul class="engine-list">
+											{#each cat.engines as eng (eng.engine)}
+												<li>· {eng.engine} >= {eng.minVersion ?? '?'}</li>
+											{/each}
+										</ul>
+									</details>
 								{/each}
 							</div>
-							<ul class="engine-list">
-								{#each filtered_engines(data.engines) as eng (eng.engine)}
-									<li>· {eng.engine} >= {eng.minVersion ?? '?'}</li>
-								{/each}
-							</ul>
 						{/if}
 					{:else if data.type === 'simple'}
 						<p class="description">{data.description}</p>
@@ -276,47 +271,60 @@
 		padding: 1.5rem;
 	}
 
-	.engine-filters {
-		display: flex;
-		gap: 0.5rem;
+	.engine-tabs {
+		display: grid;
+		grid-template-columns: repeat(var(--tab-count), auto);
+		grid-template-rows: auto 1fr;
 		margin: 0.75rem 0;
-	}
-
-	.filter-btn {
-		background: none;
-		color: var(--accent);
-		border: 1px solid var(--accent);
-		padding: 0.3rem 0.7rem;
-		font-family: inherit;
-		font-size: 0.75rem;
+		border: 1px solid var(--border);
 		border-radius: 4px;
-		cursor: pointer;
-		transition:
-			background 0.15s,
-			color 0.15s;
+		overflow: hidden;
 	}
 
-	.filter-btn:hover {
-		background: var(--accent-tint);
+	.engine-tab {
+		display: grid;
+		grid-template-columns: subgrid;
+		grid-template-rows: subgrid;
+		grid-column: 1 / -1;
+		grid-row: 1 / span calc(var(--tab-count) - 1);
 	}
 
-	.filter-btn.active {
+	.engine-tab[open] > .tab-btn {
 		background: var(--accent);
 		color: var(--bg);
 	}
 
-	.engine-list {
-		list-style: none;
-		padding: 0;
-		margin: 0.5rem 0 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.2rem;
+	.engine-tab::details-content {
+		grid-row: 2;
+		grid-column: 1 / -1;
+		padding: 0.5rem 1rem;
 	}
 
-	.engine-list li {
-		font-size: 0.85rem;
-		color: var(--text);
+	.tab-btn {
+		grid-row: 1;
+		grid-column: var(--n) / span 1;
+		z-index: 1;
+		background: none;
+		color: var(--accent);
+		border: none;
+		border-right: 1px solid var(--border);
+		padding: 0.4rem 0.9rem;
+		font-family: inherit;
+		font-size: 0.75rem;
+		cursor: pointer;
+		transition:
+			background 0.15s,
+			color 0.15s;
+		list-style: none;
+	}
+
+	.tab-btn:hover {
+		background: var(--accent-tint);
+	}
+
+	.tab-btn::marker,
+	.tab-btn::-webkit-details-marker {
+		display: none;
 	}
 
 	/* Not found */
