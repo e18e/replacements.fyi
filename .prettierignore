@@ -7,4 +7,4 @@ bun.lockb
 
 # Miscellaneous
 /static/
-./worker-configuration.d.ts
+worker-configuration.d.ts
