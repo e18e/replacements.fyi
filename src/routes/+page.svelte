@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { all } from 'module-replacements';
+	import Autocomplete from '$lib/Autocomplete.svelte';
 	import MrE18e from '$lib/MrE18e.svelte';
 
 	const examples = ['is-number', 'left-pad', 'is-array', 'object-assign'];
+	const packages = Object.keys(all.mappings);
 </script>
 
 <div class="page">
@@ -33,7 +36,7 @@
 			}}
 			class="search-form"
 		>
-			<input placeholder="e.g. is-number" autocomplete="off" spellcheck="false" name="package" />
+			<Autocomplete items={packages} placeholder="e.g. is-number" name="package" />
 			<button type="submit" class="submit-btn" aria-label="Search">→</button>
 		</form>
 
@@ -100,27 +103,12 @@
 		border: 1px solid var(--border-strong);
 		border-radius: 6px;
 		background: var(--input-bg);
-		overflow: hidden;
+		overflow: visible;
 		transition: border-color 0.15s;
 	}
 
 	.search-form:focus-within {
 		border-color: var(--accent);
-	}
-
-	input {
-		background: transparent;
-		border: none;
-		outline: none;
-		color: var(--text);
-		font-family: inherit;
-		font-size: 0.9375rem;
-		width: 100%;
-		padding: 0.625rem 0.75rem;
-	}
-
-	input::placeholder {
-		color: var(--subtle);
 	}
 
 	.submit-btn {
