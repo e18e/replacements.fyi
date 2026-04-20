@@ -90,7 +90,10 @@
 					<span class="badge">{data.type}</span>
 
 					{#if data.type === 'native'}
-						<p class="description">This feature is available natively by using <span class="teal">{key}</span>. No third-party package needed.</p>
+						<p class="description">
+							This feature is available natively by using <span class="teal">{key}</span>. No
+							third-party package needed.
+						</p>
 						{#if data.url}
 							<p class="doc-link">
 								→ docs:
@@ -138,7 +141,11 @@
 						<p class="description">This package is no longer necessary. {data.description}</p>
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
-						<p class="description">This package has more performant alternatives.{#if data.replacementModule} For your use case, we recommend <span class="teal">{data.replacementModule}</span>.{/if}</p>
+						<p class="description">
+							This package has more performant alternatives.{#if data.replacementModule}
+								For your use case, we recommend <span class="teal">{data.replacementModule}</span
+								>.{/if}
+						</p>
 						{#if data.url}
 							<p class="doc-link">
 								→ docs:
