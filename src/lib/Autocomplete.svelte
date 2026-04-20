@@ -17,10 +17,13 @@
 
 	let exact = $derived(filtered.length === 1 && filtered[0] === value);
 
+	let input: HTMLInputElement;
+
 	function select(item: string) {
 		value = item;
 		open = false;
 		active_index = -1;
+		input.focus();
 	}
 
 	function handle_keydown(e: KeyboardEvent) {
@@ -51,6 +54,7 @@
 
 <div class="autocomplete">
 	<input
+		bind:this={input}
 		bind:value
 		oninput={handle_input}
 		onkeydown={handle_keydown}
@@ -107,7 +111,8 @@
 		font-family: inherit;
 		font-size: 0.9375rem;
 		width: 100%;
-		padding: 0.625rem 0.75rem;
+		padding: 0.625rem 0 0.625rem 0.75rem;
+		box-sizing: border-box;
 	}
 
 	input::placeholder {

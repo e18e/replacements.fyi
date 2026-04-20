@@ -90,6 +90,7 @@
 					<span class="badge">{data.type}</span>
 
 					{#if data.type === 'native'}
+						<p class="description">This feature is available natively by using <span class="teal">{key}</span>. No third-party package needed.</p>
 						{#if data.url}
 							<p class="doc-link">
 								→ docs:
@@ -116,27 +117,25 @@
 							</div>
 						{/if}
 					{:else if data.type === 'simple'}
-						<p class="description">{data.description}</p>
+						<p class="description">This package is no longer necessary. {data.description}</p>
 						{#if data.example}
 							<p class="comment">// example</p>
 							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 							{@html await highlight(data.example)}
 						{/if}
 					{:else if data.type === 'removal'}
-						<p class="description">{data.description}</p>
+						<p class="description">This package is no longer necessary. {data.description}</p>
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
+						<p class="description">This package has more performant alternatives.{#if data.replacementModule} For your use case, we recommend <span class="teal">{data.replacementModule}</span>.{/if}</p>
 						{#if data.url}
-							→ docs:
 							<p class="doc-link">
+								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 								<a href={get_url(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
 								>
 							</p>
-						{/if}
-						{#if data.replacementModule}
-							<p class="doc-link">→ use: <span class="teal">{data.replacementModule}</span></p>
 						{/if}
 					{/if}
 				</div>
