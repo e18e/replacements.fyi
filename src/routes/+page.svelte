@@ -36,7 +36,7 @@
 			}}
 			class="search-form"
 		>
-			<Autocomplete items={packages} placeholder="e.g. is-number" name="package" />
+			<Autocomplete items={packages} placeholder="e.g. is-number" name="package" autofocus />
 			<button type="submit" class="submit-btn" aria-label="Search">→</button>
 		</form>
 

@@ -18,6 +18,11 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<title>replacements.fyi - performant, safer npm package alternatives</title>
+	<meta
+		name="description"
+		content="Find more performant and safer replacements for outdated or unnecessary npm packages."
+	/>
 </svelte:head>
 
 <ThemeToggle />

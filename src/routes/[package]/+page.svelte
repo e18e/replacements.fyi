@@ -7,7 +7,9 @@
 	let { params } = $props();
 
 	let package_name = $derived(params.package ?? '');
-	let mapping = $derived(all.mappings[package_name]);
+	let mapping = $derived(
+		Object.hasOwn(all.mappings, package_name) ? all.mappings[package_name] : undefined
+	);
 
 	let resolved_replacements = $derived(
 		mapping ? mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] })) : []
@@ -58,6 +60,16 @@
 		].filter((c) => c.engines.length > 0);
 	}
 </script>
+
+<svelte:head>
+	{#if mapping}
+		<title>{package_name} - replacements.fyi</title>
+		<meta name="description" content="Replacements for the '{package_name}' npm package." />
+	{:else}
+		<title>{package_name} not found - replacements.fyi</title>
+		<meta name="description" content="No replacement found for the '{package_name}' npm package." />
+	{/if}
+</svelte:head>
 
 <a href={resolve('/')} class="back-link"><MrE18e /></a>
 <div class="page">

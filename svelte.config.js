@@ -12,7 +12,13 @@ const config = {
 		adapter: adapter({ fallback: '404.html' }),
 		experimental: { remoteFunctions: true },
 		prerender: {
-			entries: Object.keys(all.mappings).map((key) => `/${encodeURIComponent(key)}`)
+			entries: [
+				'/llms.txt',
+				...Object.keys(all.mappings).flatMap((key) => [
+					`/${encodeURIComponent(key)}`,
+					key.startsWith('@') ? `/${key}.json` : `/${encodeURIComponent(key)}.json`
+				])
+			]
 		}
 	}
 };
