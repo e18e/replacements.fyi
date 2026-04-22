@@ -30,7 +30,7 @@
 	</header>
 
 	<div class="filters">
-		<Autocomplete placeholder="Filter packages..." bind:value={filter} />
+		<Autocomplete items={packages} placeholder="Filter packages..." bind:value={filter} />
 	</div>
 
 	<ul class="package-list">
