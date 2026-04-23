@@ -63,12 +63,12 @@ test('Escape closes the dropdown', async () => {
 	expect(page.getByRole('listbox').elements()).toHaveLength(0);
 });
 
-test('exact match hides dropdown', async () => {
+test('exact match does not hide dropdown', async () => {
 	render(Autocomplete, { items });
 	const input = page.getByRole('combobox');
 	await userEvent.click(input);
 	await userEvent.keyboard('cherry');
-	expect(page.getByRole('listbox').elements()).toHaveLength(0);
+	expect(page.getByRole('listbox').elements()).toHaveLength(1);
 });
 
 test('clicking a suggestion selects it', async () => {
