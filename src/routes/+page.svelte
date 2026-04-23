@@ -52,6 +52,8 @@
 		<a href="https://e18e.dev" class="powered-by" target="_blank" rel="noopener"
 			>powered by e18e.dev</a
 		>
+
+		<a href={resolve('/packages')} class="all-packages-link">Browse all packages →</a>
 	</div>
 </div>
 
@@ -173,6 +175,19 @@
 	}
 
 	.powered-by:hover {
+		text-decoration: underline;
+	}
+
+	.all-packages-link {
+		display: block;
+		text-align: center;
+		margin-top: 2rem;
+		color: var(--accent);
+		font-size: 0.875rem;
+		text-decoration: none;
+	}
+
+	.all-packages-link:hover {
 		text-decoration: underline;
 	}
 </style>

@@ -12,7 +12,7 @@
 	let active_index = $state(-1);
 
 	let filtered = $derived(
-		value.length > 0 ? items.filter((item) => item.includes(value)).slice(0, 20) : []
+		value.length > 0 ? items.filter((item) => item.includes(value.toLowerCase())).slice(0, 20) : []
 	);
 
 	let input: HTMLInputElement;
