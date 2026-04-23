@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
-	import Autocomplete from '$lib/Autocomplete.svelte';
+	import FilterInput from '$lib/FilterInput.svelte';
 	import MrE18e from '$lib/MrE18e.svelte';
 
 	const packages = Object.keys(all.mappings).sort();
@@ -30,7 +30,7 @@
 	</header>
 
 	<div class="filters">
-		<Autocomplete items={packages} placeholder="Filter packages..." bind:value={filter} />
+		<FilterInput placeholder="Filter packages..." bind:value={filter} autofocus />
 	</div>
 
 	<ul class="package-list">
@@ -97,6 +97,7 @@
 
 	.filters {
 		display: flex;
+		flex: 1;
 		align-items: center;
 		margin-bottom: 1.5rem;
 		border: 1px solid var(--border-strong);
