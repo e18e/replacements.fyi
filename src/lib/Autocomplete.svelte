@@ -15,8 +15,6 @@
 		value.length > 0 ? items.filter((item) => item.includes(value)).slice(0, 20) : []
 	);
 
-	let exact = $derived(filtered.length === 1 && filtered[0] === value);
-
 	let input: HTMLInputElement;
 
 	function select(item: string) {
@@ -75,7 +73,7 @@
 		aria-controls="autocomplete-list"
 		aria-activedescendant={active_index >= 0 ? `option-${active_index}` : undefined}
 	/>
-	{#if open && filtered.length > 0 && !exact}
+	{#if open && filtered.length > 0}
 		<ul id="autocomplete-list" class="suggestions" role="listbox">
 			{#each filtered as item, i (item)}
 				<li
