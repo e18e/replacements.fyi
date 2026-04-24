@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { all, type EngineConstraint, type KnownUrl } from 'module-replacements';
+	import {
+		all,
+		nativeReplacements,
+		type EngineConstraint,
+		type KnownUrl,
+		type ModuleReplacement
+	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
 	import MrE18e from '$lib/MrE18e.svelte';
 
@@ -44,6 +50,22 @@
 		if (url.type === 'mdn') return `MDN`;
 		if (url.type === 'e18e') return `e18e docs`;
 		return `Node.js docs`;
+	}
+
+	function get_type_display_name(
+		type: ModuleReplacement['type'],
+		inNativeManifest: boolean
+	): string {
+		if (inNativeManifest) return 'Available natively';
+		if (type === 'native') return 'Available natively';
+		if (type === 'simple') return 'Simple or drop-in replacement';
+		if (type === 'documented') return 'Community choice';
+		if (type === 'removal') return 'Just remove it, no replacement needed';
+		return type;
+	}
+
+	function is_in_native_manifest(key: string): boolean {
+		return key in nativeReplacements.replacements;
 	}
 
 	function categorized_engines(engines: EngineConstraint[] | undefined) {
@@ -99,7 +121,7 @@
 			{#each resolved_replacements as { key, data } (key)}
 				<div class="replacement">
 					<h2 class="replacement-id">{key}</h2>
-					<span class="badge">{data.type}</span>
+					<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
 
 					{#if data.type === 'native'}
 						<p class="description">
