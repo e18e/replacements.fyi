@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Home page', () => {
 	test('loads with search form and example links', async ({ page }) => {
 		await page.goto('/');
-		await expect(page.getByRole('combobox')).toBeVisible();
+		await expect(page.getByRole('combobox', { name: 'Package name' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Search' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'is-number' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'left-pad' })).toBeVisible();
@@ -20,7 +20,7 @@ test.describe('Home page', () => {
 
 	test('typing in search shows autocomplete suggestions', async ({ page }) => {
 		await page.goto('/');
-		const input = page.getByRole('combobox');
+		const input = page.getByRole('combobox', { name: 'Package name' });
 		await input.fill('is-n');
 		await expect(page.getByRole('option', { name: /is-number/ })).toHaveCount(2);
 	});
@@ -33,7 +33,7 @@ test.describe('Home page', () => {
 
 	test('submitting search navigates to detail page', async ({ page }) => {
 		await page.goto('/');
-		const input = page.getByRole('combobox');
+		const input = page.getByRole('combobox', { name: 'Package name' });
 		await input.fill('is-number');
 		await page.getByRole('button', { name: 'Search' }).click();
 		await expect(page).toHaveURL(/\/is-number/);
@@ -59,5 +59,33 @@ test.describe('Package detail page', () => {
 		// The back link contains "mr.e18e" text
 		await page.locator('.back-link').click();
 		await expect(page).toHaveURL('/');
+	});
+});
+
+test.describe('Runtime switcher', () => {
+	test('defaults to Any and persists selection via cookie', async ({ page }) => {
+		await page.goto('/');
+		const select = page.getByRole('combobox', { name: 'Runtime' });
+		await expect(select).toHaveValue('any');
+
+		await select.selectOption('bun');
+		await expect(select).toHaveValue('bun');
+
+		const cookies = await page.context().cookies();
+		expect(cookies.find((c) => c.name === 'runtime')?.value).toBe('bun');
+
+		await page.reload();
+		await expect(page.getByRole('combobox', { name: 'Runtime' })).toHaveValue('bun');
+	});
+
+	test('filters replacements on detail page when switching runtime', async ({ page }) => {
+		// buffer-from has a node-only replacement
+		await page.goto('/buffer-from');
+		const comment = page.locator('.replacements > .comment');
+		await expect(comment).toHaveText('// replacements (1)');
+
+		await page.getByRole('combobox', { name: 'Runtime' }).selectOption('browser');
+		await expect(comment).toHaveText('// replacements (0 of 1)');
+		await expect(page.getByText(/No replacements match the/)).toBeVisible();
 	});
 });

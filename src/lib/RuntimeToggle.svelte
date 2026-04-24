@@ -2,7 +2,7 @@
 	import { runtime, runtimes, type Runtime } from '$lib/runtime.svelte';
 </script>
 
-<label class="toggle" aria-label="Runtime">
+<label class="toggle">
 	<span class="label">runtime</span>
 	<select
 		value={runtime.pref}
