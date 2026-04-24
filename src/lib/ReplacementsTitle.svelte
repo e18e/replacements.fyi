@@ -1,4 +1,4 @@
-<span class="replacements-title">Replacements.fyi</span>
+<span class="replacements-title">replacements.fyi</span>
 
 <style>
 	span {
