@@ -5,7 +5,7 @@
 	import Autocomplete from '$lib/Autocomplete.svelte';
 	import MrE18e from '$lib/MrE18e.svelte';
 
-	const examples = ['is-number', 'left-pad', 'is-array', 'object-assign'];
+	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 	const packages = Object.keys(all.mappings);
 </script>
 
