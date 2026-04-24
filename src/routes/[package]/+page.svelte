@@ -176,7 +176,7 @@
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
 						<p class="description">
-							This package has more performant alternatives.{#if data.replacementModule}
+							This package has more performant alternatives. {#if data.replacementModule}
 								For your use case, we recommend <span class="teal">{data.replacementModule}</span
 								>.{/if}
 						</p>
