@@ -31,7 +31,11 @@
 				if (package_name) {
 					const input = e.currentTarget.querySelector('input')!;
 					input.style.setProperty('view-transition-name', 'package-name');
-					goto(resolve('/[package]', { package: encodeURIComponent(package_name.toString()) }));
+					goto(
+						resolve('/[package]', {
+							package: encodeURIComponent(package_name.toString().toLowerCase())
+						})
+					);
 				}
 			}}
 			class="search-form"
