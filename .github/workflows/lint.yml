@@ -9,6 +9,7 @@ on:
 
 jobs:
   lint:
+    name: Run linting
     runs-on: ubuntu-latest
 
     steps:
