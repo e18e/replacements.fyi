@@ -74,6 +74,10 @@
 			{ label: 'other', engines: other }
 		].filter((c) => c.engines.length > 0);
 	}
+
+	function resolveNpmUrl(moduleName: string): string {
+		return `https://npmx.dev/package/${moduleName}`;
+	}
 </script>
 
 <svelte:head>
@@ -169,9 +173,8 @@
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
 						<p class="description">
-							This package has more performant alternatives.{#if data.replacementModule}
-								For your use case, we recommend <span class="teal">{data.replacementModule}</span
-								>.{/if}
+							This package provides equivalent functionality and has been flagged as more
+							performant.
 						</p>
 						{#if data.url}
 							<p class="doc-link">
@@ -179,6 +182,15 @@
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
+								>
+							</p>
+						{/if}
+						{#if data.replacementModule}
+							<p class="doc-link">
+								→ npmx:
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+								<a href={resolveNpmUrl(data.replacementModule)} target="_blank" rel="noopener"
+									>{key}</a
 								>
 							</p>
 						{/if}
