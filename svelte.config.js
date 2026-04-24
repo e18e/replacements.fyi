@@ -12,6 +12,7 @@ const config = {
 		adapter: adapter({ fallback: '404.html' }),
 		experimental: { remoteFunctions: true },
 		prerender: {
+			origin: 'https://replacements.fyi',
 			entries: [
 				'/llms.txt',
 				...Object.keys(all.mappings).flatMap((key) => [
