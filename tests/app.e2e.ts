@@ -7,7 +7,7 @@ test.describe('Home page', () => {
 		await expect(page.getByRole('button', { name: 'Search' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'is-number' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'left-pad' })).toBeVisible();
-		await expect(page.getByRole('link', { name: 'is-array' })).toBeVisible();
+		await expect(page.getByRole('link', { name: 'is-odd' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'object-assign' })).toBeVisible();
 	});
 
