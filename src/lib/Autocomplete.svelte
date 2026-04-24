@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { resolve } from '$app/paths';
-	import { goto } from '$app/navigation';
 
 	type Props = {
 		items: string[];
 		value?: string;
+		onSelectNavigateTo: (item: string) => void;
 	} & HTMLInputAttributes;
 
-	let { items, value = $bindable(''), ...rest }: Props = $props();
+	let { items, value = $bindable(''), onSelectNavigateTo, ...rest }: Props = $props();
 
 	let open = $state(false);
 	let active_index = $state(-1);
@@ -21,7 +20,7 @@
 
 	function select(item: string) {
 		input.style.setProperty('view-transition-name', 'package-name');
-		goto(resolve('/[package]', { package: encodeURIComponent(item) }));
+		onSelectNavigateTo(item);
 	}
 
 	function handle_keydown(e: KeyboardEvent) {

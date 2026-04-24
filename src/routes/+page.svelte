@@ -7,6 +7,10 @@
 
 	const examples = ['is-number', 'left-pad', 'is-array', 'object-assign'];
 	const packages = Object.keys(all.mappings);
+
+	function navigateTo(packageName: string) {
+		goto(resolve('/[package]', { package: encodeURIComponent(packageName) }));
+	}
 </script>
 
 <div class="page">
@@ -31,12 +35,18 @@
 				if (package_name) {
 					const input = e.currentTarget.querySelector('input')!;
 					input.style.setProperty('view-transition-name', 'package-name');
-					goto(resolve('/[package]', { package: encodeURIComponent(package_name.toString()) }));
+					navigateTo(package_name.toString());
 				}
 			}}
 			class="search-form"
 		>
-			<Autocomplete items={packages} placeholder="e.g. is-number" name="package" autofocus />
+			<Autocomplete
+				items={packages}
+				placeholder="e.g. is-number"
+				name="package"
+				onSelectNavigateTo={navigateTo}
+				autofocus
+			/>
 			<button type="submit" class="submit-btn" aria-label="Search">→</button>
 		</form>
 
