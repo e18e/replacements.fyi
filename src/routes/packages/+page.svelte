@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
 	import FilterInput from '$lib/FilterInput.svelte';
-	import MrE18e from '$lib/MrE18e.svelte';
+	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 
 	const packages = Object.keys(all.mappings).sort();
 
@@ -20,7 +20,7 @@
 	<meta name="description" content="Browse all npm packages with replacements." />
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><MrE18e /></a>
+<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 
 <div class="page">
 	<header class="header">
