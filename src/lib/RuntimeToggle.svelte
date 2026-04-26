@@ -2,8 +2,8 @@
 	import { runtime, runtimes, type Runtime } from '$lib/runtime.svelte';
 </script>
 
-<label class="toggle">
-	<span class="label">runtime</span>
+<label class="field">
+	<span class="label">runtime:</span>
 	<select
 		value={runtime.pref}
 		onchange={(e) => runtime.set((e.currentTarget as HTMLSelectElement).value as Runtime)}
@@ -15,33 +15,27 @@
 </label>
 
 <style>
-	.toggle {
-		position: fixed;
-		top: 0.75rem;
-		right: 10.5rem;
-		z-index: 100;
+	.field {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.4rem;
-		border: 1px solid var(--border);
-		border-radius: 6px;
-		background: var(--surface);
-		padding: 0 0.55rem;
+		gap: 0.5rem;
+		line-height: 1;
 	}
 
 	.label {
 		color: var(--subtle);
-		font-size: 0.7rem;
-		line-height: 1;
 	}
 
 	select {
-		background: none;
-		border: none;
+		appearance: none;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 6px;
 		color: var(--muted);
 		font-family: inherit;
-		font-size: 0.7rem;
-		padding: 0.3rem 0;
+		font-size: 16px;
+		padding: 0.3rem 0.55rem;
+		margin: 0;
 		cursor: pointer;
 		line-height: 1;
 		outline: none;
@@ -49,5 +43,10 @@
 
 	select:hover {
 		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	select:focus-visible {
+		border-color: var(--accent);
 	}
 </style>

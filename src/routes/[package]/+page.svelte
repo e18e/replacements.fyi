@@ -9,6 +9,7 @@
 	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
 	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
 	import { runtime } from '$lib/runtime.svelte';
 
@@ -110,6 +111,13 @@
 			<h1 class="pkg-name"><span class="pkg">{package_name}</span></h1>
 			<p class="pkg-type">type: "{mapping.type}"</p>
 		</header>
+
+		<section class="preferences">
+			<p class="comment">// preferences</p>
+			<div class="prefs-list">
+				<RuntimeToggle />
+			</div>
+		</section>
 
 		<section class="replacements">
 			<p class="comment">// replacements ({count_label})</p>
@@ -253,6 +261,16 @@
 
 	.replacements > .comment {
 		margin-bottom: 1.5rem;
+	}
+
+	.preferences {
+		margin-bottom: 2rem;
+	}
+
+	.prefs-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
 	}
 
 	.replacement {
