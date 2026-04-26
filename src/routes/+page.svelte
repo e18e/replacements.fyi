@@ -80,11 +80,12 @@
 		max-width: 480px;
 		width: 100%;
 		transform: translateY(-2rem);
+		container-type: inline-size;
 	}
 
 	.title {
 		margin-bottom: 0.5rem;
-		font-size: 3.5rem;
+		font-size: min(3rem, 10cqi);
 		line-height: 1;
 	}
 
