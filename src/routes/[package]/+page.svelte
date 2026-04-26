@@ -276,6 +276,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
+		font-size: 0.9rem;
 	}
 
 	.replacement {

@@ -34,7 +34,6 @@
 		border-radius: 6px;
 		color: var(--muted);
 		font-family: inherit;
-		font-size: 16px;
 		padding: 0.3rem 0.55rem;
 		margin: 0;
 		cursor: pointer;
