@@ -7,6 +7,7 @@
 	<select
 		value={runtime.pref}
 		name="runtime"
+		aria-label="Runtime"
 		onchange={(e) => runtime.set((e.currentTarget as HTMLSelectElement).value as Runtime)}
 	>
 		{#each runtimes as opt (opt.value)}

@@ -64,7 +64,7 @@ test.describe('Package detail page', () => {
 
 test.describe('Runtime switcher', () => {
 	test('defaults to Any and persists selection via cookie', async ({ page }) => {
-		await page.goto('/');
+		await page.goto('/is-number');
 		const select = page.getByRole('combobox', { name: 'Runtime' });
 		await expect(select).toHaveValue('any');
 
