@@ -6,6 +6,7 @@
 	<span class="label">runtime:</span>
 	<select
 		value={runtime.pref}
+		name="runtime"
 		onchange={(e) => runtime.set((e.currentTarget as HTMLSelectElement).value as Runtime)}
 	>
 		{#each runtimes as opt (opt.value)}
