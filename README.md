@@ -1,42 +1,17 @@
-# sv
+# 🔁 [replacements.fyi](https://replacements.fyi)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## What is this?
 
-## Creating a project
+The [module replacements](https://github.com/e18e/module-replacements) project is a community-driven effort to map replaceable npm packages to their native or more performant alternatives.
 
-If you're seeing this, you've probably already done this step. Congrats!
+This website serves as a searchable, interactive catalog of these module replacements, allowing you to easily find and adopt better alternatives for your projects.
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Contributing
 
-To recreate this project with the same configuration:
+### Replacements
 
-```sh
-# recreate this project
-pnpm dlx sv@0.15.1 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright sveltekit-adapter="adapter:static" mcp="ide:opencode" --install pnpm .
-```
+If you'd like to contribute to the replacements data set, or you think a replacement is wrong, please open an issue or submit a pull request to the [module replacements repository](https://github.com/e18e/module-replacements).
 
-## Developing
+### Website
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+If you have suggestions for improving the website, please open an issue or submit a pull request to this repository.

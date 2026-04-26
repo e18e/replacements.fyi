@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import {
 		all,
+		resolveDocUrl,
 		nativeReplacements,
 		type EngineConstraint,
 		type KnownUrl,
@@ -33,14 +34,6 @@
 			? `${resolved_replacements.length}`
 			: `${visible_replacements.length} of ${resolved_replacements.length}`
 	);
-
-	function get_url(url: KnownUrl): string {
-		if (typeof url === 'string') return url;
-		if (url.type === 'mdn') return `https://developer.mozilla.org/en-US/docs/${url.id}`;
-		if (url.type === 'e18e')
-			return `https://github.com/e18e/module-replacements/tree/main/docs/modules/${url.id}.md`;
-		return `https://nodejs.org/${url.id}`;
-	}
 
 	function get_url_display_name(url: KnownUrl): string {
 		if (typeof url === 'string') return url;
@@ -77,6 +70,10 @@
 			{ label: 'runtimes', engines: runtimes },
 			{ label: 'other', engines: other }
 		].filter((c) => c.engines.length > 0);
+	}
+
+	function resolveNpmUrl(moduleName: string): string {
+		return `https://npmx.dev/package/${moduleName}`;
 	}
 </script>
 
@@ -143,7 +140,7 @@
 							<p class="doc-link">
 								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener"
+								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
 								>
 							</p>
@@ -187,16 +184,24 @@
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
 						<p class="description">
-							This package has more performant alternatives.{#if data.replacementModule}
-								For your use case, we recommend <span class="teal">{data.replacementModule}</span
-								>.{/if}
+							This package provides equivalent functionality and has been flagged as more
+							performant.
 						</p>
 						{#if data.url}
 							<p class="doc-link">
 								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener"
+								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
+								>
+							</p>
+						{/if}
+						{#if data.replacementModule}
+							<p class="doc-link">
+								→ npmx:
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+								<a href={resolveNpmUrl(data.replacementModule)} target="_blank" rel="noopener"
+									>{key}</a
 								>
 							</p>
 						{/if}
