@@ -10,6 +10,9 @@
 	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
+	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
+	import { runtime } from '$lib/runtime.svelte';
 
 	let { params } = $props();
 
@@ -22,21 +25,15 @@
 		mapping ? mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] })) : []
 	);
 
-	const browser_engines = [
-		'chrome',
-		'firefox',
-		'safari',
-		'edge',
-		'safari_ios',
-		'chrome_android',
-		'firefox_android',
-		'webview_android',
-		'webview_ios',
-		'samsunginternet_android',
-		'opera',
-		'opera_android'
-	];
-	const runtime_engines = ['nodejs', 'deno', 'bun'];
+	let visible_replacements = $derived(
+		resolved_replacements.filter(({ data }) => engines_match_runtime(data.engines, runtime.pref))
+	);
+
+	let count_label = $derived(
+		visible_replacements.length === resolved_replacements.length
+			? `${resolved_replacements.length}`
+			: `${visible_replacements.length} of ${resolved_replacements.length}`
+	);
 
 	function get_url_display_name(url: KnownUrl): string {
 		if (typeof url === 'string') return url;
@@ -112,10 +109,24 @@
 			<p class="pkg-type">type: "{mapping.type}"</p>
 		</header>
 
-		<section class="replacements">
-			<p class="comment">// replacements ({resolved_replacements.length})</p>
+		<section class="preferences">
+			<p class="comment">// preferences</p>
+			<div class="prefs-list">
+				<RuntimeToggle />
+			</div>
+		</section>
 
-			{#each resolved_replacements as { key, data } (key)}
+		<section class="replacements">
+			<p class="comment">// replacements ({count_label})</p>
+
+			{#if visible_replacements.length === 0}
+				<p class="description">
+					No replacements match the <span class="teal">{runtime.pref}</span> runtime. Try switching
+					to <span class="teal">any</span>.
+				</p>
+			{/if}
+
+			{#each visible_replacements as { key, data } (key)}
 				<div class="replacement">
 					<h2 class="replacement-id">{key}</h2>
 					<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
@@ -255,6 +266,17 @@
 
 	.replacements > .comment {
 		margin-bottom: 1.5rem;
+	}
+
+	.preferences {
+		margin-bottom: 2rem;
+	}
+
+	.prefs-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		font-size: 0.9rem;
 	}
 
 	.replacement {

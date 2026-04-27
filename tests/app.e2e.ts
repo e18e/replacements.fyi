@@ -69,3 +69,31 @@ test.describe('Package detail page', () => {
 		await expect(page).toHaveURL('/');
 	});
 });
+
+test.describe('Runtime switcher', () => {
+	test('defaults to Any and persists selection via cookie', async ({ page }) => {
+		await page.goto('/is-number');
+		const select = page.getByRole('combobox', { name: 'Runtime' });
+		await expect(select).toHaveValue('any');
+
+		await select.selectOption('bun');
+		await expect(select).toHaveValue('bun');
+
+		const cookies = await page.context().cookies();
+		expect(cookies.find((c) => c.name === 'runtime')?.value).toBe('bun');
+
+		await page.reload();
+		await expect(page.getByRole('combobox', { name: 'Runtime' })).toHaveValue('bun');
+	});
+
+	test('filters replacements on detail page when switching runtime', async ({ page }) => {
+		// buffer-from has a node-only replacement
+		await page.goto('/buffer-from');
+		const comment = page.locator('.replacements > .comment');
+		await expect(comment).toHaveText('// replacements (1)');
+
+		await page.getByRole('combobox', { name: 'Runtime' }).selectOption('browser');
+		await expect(comment).toHaveText('// replacements (0 of 1)');
+		await expect(page.getByText(/No replacements match the/)).toBeVisible();
+	});
+});
