@@ -8,8 +8,12 @@
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 	const packages = Object.keys(all.mappings);
 
+	function packageHref(packageName: string) {
+		return resolve('/[package]', { package: encodeURIComponent(packageName) });
+	}
+
 	function navigateTo(packageName: string) {
-		goto(resolve('/[package]', { package: encodeURIComponent(packageName) }));
+		goto(packageHref(packageName));
 	}
 </script>
 
@@ -44,6 +48,7 @@
 				items={packages}
 				placeholder="e.g. is-number"
 				name="package"
+				getItemHref={packageHref}
 				onSelectNavigateTo={navigateTo}
 				autofocus
 			/>
@@ -54,7 +59,7 @@
 			<span class="examples-header">// examples</span>
 			<ul class="examples-list">
 				{#each examples as name (name)}
-					<li><a href={resolve('/[package]', { package: encodeURIComponent(name) })}>{name}</a></li>
+					<li><a href={packageHref(name)}>{name}</a></li>
 				{/each}
 			</ul>
 		</div>

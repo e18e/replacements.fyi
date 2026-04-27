@@ -4,10 +4,11 @@
 	type Props = {
 		items: string[];
 		value?: string;
+		getItemHref: (item: string) => string;
 		onSelectNavigateTo: (item: string) => void;
 	} & HTMLInputAttributes;
 
-	let { items, value = $bindable(''), onSelectNavigateTo, ...rest }: Props = $props();
+	let { items, value = $bindable(''), getItemHref, onSelectNavigateTo, ...rest }: Props = $props();
 
 	let open = $state(false);
 	let active_index = $state(-1);
@@ -21,6 +22,10 @@
 	function select(item: string) {
 		input.style.setProperty('view-transition-name', 'package-name');
 		onSelectNavigateTo(item);
+	}
+
+	function prepare_transition() {
+		input.style.setProperty('view-transition-name', 'package-name');
 	}
 
 	function handle_keydown(e: KeyboardEvent) {
@@ -65,33 +70,25 @@
 		{...rest}
 		autocomplete="off"
 		spellcheck="false"
-		role="combobox"
-		aria-autocomplete="list"
-		aria-expanded={open}
-		aria-controls="autocomplete-list"
-		aria-activedescendant={active_index >= 0 ? `option-${active_index}` : undefined}
 	/>
 	{#if open && filtered.length > 0}
-		<ul
-			id="autocomplete-list"
-			class="suggestions"
-			role="listbox"
-			onmousedown={(e) => e.preventDefault()}
-		>
+		<ul class="suggestions">
 			{#each filtered as item, i (item)}
-				<li
-					{@attach (node) => {
-						if (active_index === i) {
-							node.scrollIntoView({ block: 'nearest' });
-						}
-					}}
-					id="option-{i}"
-					role="option"
-					aria-selected={i === active_index}
-					class:active={i === active_index}
-					onclick={() => select(item)}
-				>
-					{item}
+				<li>
+					<a
+						{@attach (node) => {
+							if (active_index === i) {
+								node.scrollIntoView({ block: 'nearest' });
+							}
+						}}
+						href={getItemHref(item)}
+						class:active={i === active_index}
+						aria-current={i === active_index ? 'true' : undefined}
+						onmousedown={(e) => e.preventDefault()}
+						onclick={prepare_transition}
+					>
+						{item}
+					</a>
 				</li>
 			{/each}
 		</ul>
@@ -136,15 +133,17 @@
 		z-index: 10;
 	}
 
-	.suggestions li {
+	.suggestions a {
+		display: block;
 		padding: 0.375rem 0.75rem;
 		font-size: 0.875rem;
 		color: var(--text);
 		cursor: pointer;
+		text-decoration: none;
 	}
 
-	.suggestions li:hover,
-	.suggestions li.active {
+	.suggestions a:hover,
+	.suggestions a.active {
 		background: var(--accent);
 		color: var(--bg, #0a0a1a);
 	}
