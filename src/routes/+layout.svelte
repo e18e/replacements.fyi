@@ -7,7 +7,7 @@
 	import '@fontsource/ibm-plex-mono/600.css';
 	import '@fontsource/ibm-plex-mono/700.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import ThemeToggle from '$lib/ThemeToggle.svelte';
+	import Controls from '$lib/Controls.svelte';
 	import './global.css';
 	import { setupViewTransition } from 'sveltekit-view-transition';
 
@@ -25,6 +25,6 @@
 	/>
 </svelte:head>
 
-<ThemeToggle />
+<Controls />
 
 {@render children()}

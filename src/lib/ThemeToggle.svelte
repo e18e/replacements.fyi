@@ -33,10 +33,6 @@
 
 <style>
 	.toggle {
-		position: fixed;
-		top: 0.75rem;
-		right: 0.75rem;
-		z-index: 100;
 		display: inline-flex;
 		border: 1px solid var(--border);
 		border-radius: 6px;
