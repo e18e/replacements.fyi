@@ -11,7 +11,7 @@
 	import { highlight } from './highlight.remote';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
-	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
+	import { browser_engines, runtime_engines, engines_match_preferences } from '$lib/engines';
 	import { runtime } from '$lib/runtime.svelte';
 
 	let { params } = $props();
@@ -27,8 +27,27 @@
 	);
 
 	let visible_replacements = $derived(
-		resolved_replacements.filter(({ data }) => engines_match_runtime(data.engines, runtime.pref))
+	resolved_replacements.filter(({ data }) =>
+		engines_match_preferences(data.engines, {
+			runtime: runtime.pref,
+			browserEngine: runtime.browserEngine,
+			minVersion: runtime.minVersion
+		})
+	)
 	);
+
+let active_filter_hint = $derived.by(() => {
+	if (runtime.pref === 'browser') {
+		const with_version = runtime.minVersion
+			? ` (${runtime.browserEngine} >= ${runtime.minVersion})`
+			: ` (${runtime.browserEngine})`;
+		return `browser${with_version}`;
+	}
+	if (runtime.minVersion && runtime.pref !== 'any') {
+		return `${runtime.pref} (>= ${runtime.minVersion})`;
+	}
+	return runtime.pref;
+});
 
 	let count_label = $derived(
 		visible_replacements.length === resolved_replacements.length
@@ -122,8 +141,8 @@
 
 			{#if visible_replacements.length === 0}
 				<p class="description">
-					No replacements match the <span class="teal">{runtime.pref}</span> runtime. Try switching
-					to <span class="teal">any</span>.
+					No replacements match the <span class="teal">{active_filter_hint}</span> filter. Try
+					switching to <span class="teal">any</span> or clearing min version.
 				</p>
 			{/if}
 
