@@ -13,7 +13,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"test": "pnpm run test:unit -- --run && pnpm run test:e2e",
 		"test:e2e": "playwright test",
 		"gen": "wrangler types",
 		"deploy": "pnpm run build && wrangler deploy"
