@@ -68,5 +68,7 @@
 
 	.repo-icon {
 		display: block;
+		width: 1em;
+		height: 1em;
 	}
 </style>
