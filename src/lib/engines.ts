@@ -36,15 +36,12 @@ export function engines_match_runtime(
 
 export type EngineFilterOptions = {
 	runtime: Runtime;
-	browserEngine: BrowserEngine;
-	minVersion: string;
+	browser_engine: BrowserEngine;
+	min_version: string;
 };
 
 function tokenize_version(version: string): string[] {
-	return version
-		.trim()
-		.split(/[.-]/)
-		.filter(Boolean);
+	return version.trim().split(/[.-]/).filter(Boolean);
 }
 
 function compare_version_parts(a: string, b: string): number {
@@ -81,7 +78,10 @@ function normalize_min_version(version: string): string {
 	return version.trim();
 }
 
-function get_target_engine(runtime: Runtime, browser_engine: BrowserEngine): Runtime | BrowserEngine {
+function get_target_engine(
+	runtime: Runtime,
+	browser_engine: BrowserEngine
+): Runtime | BrowserEngine {
 	if (runtime === 'browser') return browser_engine;
 	return runtime;
 }
@@ -96,18 +96,20 @@ export function engines_match_preferences(
 	engines: EngineConstraint[] | undefined,
 	options: EngineFilterOptions
 ): boolean {
-	const { runtime, browserEngine, minVersion } = options;
+	const { runtime, browser_engine, min_version } = options;
 
 	// Missing engine metadata means "all engines", which should pass every filter.
 	if (!engines || engines.length === 0 || runtime === 'any') return true;
 
-	const target_engine = get_target_engine(runtime, browserEngine);
+	const target_engine = get_target_engine(runtime, browser_engine);
 	const matching_constraints = engines.filter((constraint) => constraint.engine === target_engine);
 	if (matching_constraints.length === 0) return false;
 
-	const normalized_user_min = normalize_min_version(minVersion);
+	const normalized_user_min = normalize_min_version(min_version);
 	if (!normalized_user_min) return true;
 
 	// If a matching constraint has no minVersion, treat it as compatible/unknown.
-	return matching_constraints.some((constraint) => is_version_compatible(constraint, normalized_user_min));
+	return matching_constraints.some((constraint) =>
+		is_version_compatible(constraint, normalized_user_min)
+	);
 }

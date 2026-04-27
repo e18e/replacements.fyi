@@ -27,27 +27,27 @@
 	);
 
 	let visible_replacements = $derived(
-	resolved_replacements.filter(({ data }) =>
-		engines_match_preferences(data.engines, {
-			runtime: runtime.pref,
-			browserEngine: runtime.browserEngine,
-			minVersion: runtime.minVersion
-		})
-	)
+		resolved_replacements.filter(({ data }) =>
+			engines_match_preferences(data.engines, {
+				runtime: runtime.pref,
+				browserEngine: runtime.browserEngine,
+				minVersion: runtime.minVersion
+			})
+		)
 	);
 
-let active_filter_hint = $derived.by(() => {
-	if (runtime.pref === 'browser') {
-		const with_version = runtime.minVersion
-			? ` (${runtime.browserEngine} >= ${runtime.minVersion})`
-			: ` (${runtime.browserEngine})`;
-		return `browser${with_version}`;
-	}
-	if (runtime.minVersion && runtime.pref !== 'any') {
-		return `${runtime.pref} (>= ${runtime.minVersion})`;
-	}
-	return runtime.pref;
-});
+	let active_filter_hint = $derived.by(() => {
+		if (runtime.pref === 'browser') {
+			const with_version = runtime.minVersion
+				? ` (${runtime.browserEngine} >= ${runtime.minVersion})`
+				: ` (${runtime.browserEngine})`;
+			return `browser${with_version}`;
+		}
+		if (runtime.minVersion && runtime.pref !== 'any') {
+			return `${runtime.pref} (>= ${runtime.minVersion})`;
+		}
+		return runtime.pref;
+	});
 
 	let count_label = $derived(
 		visible_replacements.length === resolved_replacements.length
