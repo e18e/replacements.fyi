@@ -15,10 +15,7 @@ const config = {
 			origin: 'https://replacements.fyi',
 			entries: [
 				'/llms.txt',
-				...Object.keys(all.mappings).flatMap((key) => [
-					`/${encodeURIComponent(key)}`,
-					key.startsWith('@') ? `/${key}.json` : `/${encodeURIComponent(key)}.json`
-				])
+				...Object.keys(all.mappings).flatMap((key) => [`/${key}`, `/${key}.json`])
 			]
 		}
 	}

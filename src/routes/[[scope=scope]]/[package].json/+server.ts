@@ -1,15 +1,14 @@
 import { all } from 'module-replacements';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
 export const prerender = true;
 
-export const GET: RequestHandler = ({ params }) => {
-	const name = params.package;
-	if (!name || !Object.hasOwn(all.mappings, name)) {
-		throw error(404, `No replacement found for "${name}"`);
+export function GET({ params: { package: name, scope } }) {
+	const full = `${scope ? `${scope}/` : ''}${name}`;
+	if (!Object.hasOwn(all.mappings, full)) {
+		throw error(404, `No replacement found for "${full}"`);
 	}
-	const mapping = all.mappings[name];
+	const mapping = all.mappings[full];
 
 	const replacements = mapping.replacements.map((key) => all.replacements[key]);
 
@@ -19,4 +18,4 @@ export const GET: RequestHandler = ({ params }) => {
 		url: mapping.url,
 		replacements
 	});
-};
+}

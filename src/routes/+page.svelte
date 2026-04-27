@@ -4,12 +4,13 @@
 	import { all } from 'module-replacements';
 	import Autocomplete from '$lib/Autocomplete.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import { scopify } from '$lib/utils';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 	const packages = Object.keys(all.mappings);
 
 	function packageHref(packageName: string) {
-		return resolve('/[package]', { package: encodeURIComponent(packageName) });
+		return resolve('/[[scope=scope]]/[package]', scopify(packageName));
 	}
 
 	function navigateTo(packageName: string) {
