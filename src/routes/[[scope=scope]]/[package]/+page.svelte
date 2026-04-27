@@ -30,8 +30,8 @@
 		resolved_replacements.filter(({ data }) =>
 			engines_match_preferences(data.engines, {
 				runtime: runtime.pref,
-				browserEngine: runtime.browserEngine,
-				minVersion: runtime.minVersion
+				browser_engine: runtime.browserEngine,
+				min_version: runtime.minVersion
 			})
 		)
 	);
