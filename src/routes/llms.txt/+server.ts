@@ -25,10 +25,10 @@ export const GET: RequestHandler = ({ url }) => {
 		'',
 		...names.map((name) => {
 			const html = `${origin}/${encodeURIComponent(name)}`;
-			const jsonPath = name.startsWith('@')
+			const json_path = name.startsWith('@')
 				? `${origin}/${name}.json`
 				: `${origin}/${encodeURIComponent(name)}.json`;
-			return `- [${name}](${html}) ([json](${jsonPath}))`;
+			return `- [${name}](${html}) ([json](${json_path}))`;
 		}),
 		''
 	];

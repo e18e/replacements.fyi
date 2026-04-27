@@ -45,9 +45,9 @@
 
 	function get_type_display_name(
 		type: ModuleReplacement['type'],
-		inNativeManifest: boolean
+		in_native_manifest: boolean
 	): string {
-		if (inNativeManifest) return 'Available natively';
+		if (in_native_manifest) return 'Available natively';
 		if (type === 'native') return 'Available natively';
 		if (type === 'simple') return 'Simple or drop-in replacement';
 		if (type === 'documented') return 'Community choice';
@@ -73,8 +73,8 @@
 		].filter((c) => c.engines.length > 0);
 	}
 
-	function resolveNpmUrl(moduleName: string): string {
-		return `https://npmx.dev/package/${moduleName}`;
+	function resolve_npm_url(module_name: string): string {
+		return `https://npmx.dev/package/${module_name}`;
 	}
 </script>
 
@@ -201,7 +201,7 @@
 							<p class="doc-link">
 								→ npmx:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={resolveNpmUrl(data.replacementModule)} target="_blank" rel="noopener"
+								<a href={resolve_npm_url(data.replacementModule)} target="_blank" rel="noopener"
 									>{key}</a
 								>
 							</p>

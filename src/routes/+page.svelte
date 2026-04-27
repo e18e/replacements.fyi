@@ -9,13 +9,13 @@
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 	const packages = Object.keys(all.mappings);
 
-	function packageHref(packageName: string) {
-		return resolve('/[[scope=scope]]/[package]', scopify(packageName));
+	function package_href(package_name: string) {
+		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
 	}
 
-	function navigateTo(packageName: string) {
+	function navigate_to(package_name: string) {
 		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto(packageHref(packageName));
+		goto(package_href(package_name));
 	}
 </script>
 
@@ -41,7 +41,7 @@
 				if (package_name) {
 					const input = e.currentTarget.querySelector('input')!;
 					input.style.setProperty('view-transition-name', 'package-name');
-					navigateTo(package_name.toString());
+					navigate_to(package_name.toString());
 				}
 			}}
 			class="search-form"
@@ -50,8 +50,8 @@
 				items={packages}
 				placeholder="e.g. is-number"
 				name="package"
-				getItemHref={packageHref}
-				onSelectNavigateTo={navigateTo}
+				get_item_href={package_href}
+				on_select_navigate_to={navigate_to}
 				autofocus
 			/>
 			<button type="submit" class="submit-btn" aria-label="Search">→</button>
@@ -62,7 +62,7 @@
 			<ul class="examples-list">
 				{#each examples as name (name)}
 					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<li><a href={packageHref(name)}>{name}</a></li>
+					<li><a href={package_href(name)}>{name}</a></li>
 				{/each}
 			</ul>
 		</div>

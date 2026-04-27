@@ -5,11 +5,17 @@
 	type Props = {
 		items: string[];
 		value?: string;
-		getItemHref: (item: string) => string;
-		onSelectNavigateTo: (item: string) => void;
+		get_item_href: (item: string) => string;
+		on_select_navigate_to: (item: string) => void;
 	} & HTMLInputAttributes;
 
-	let { items, value = $bindable(''), getItemHref, onSelectNavigateTo, ...rest }: Props = $props();
+	let {
+		items,
+		value = $bindable(''),
+		get_item_href,
+		on_select_navigate_to,
+		...rest
+	}: Props = $props();
 
 	let open = $state(false);
 	let active_index = $state(-1);
@@ -22,7 +28,7 @@
 
 	function select(item: string) {
 		prepare_transition();
-		onSelectNavigateTo(item);
+		on_select_navigate_to(item);
 	}
 
 	function prepare_transition() {
@@ -82,7 +88,7 @@
 								node.scrollIntoView({ block: 'nearest' });
 							}
 						}}
-						href={getItemHref(item)}
+						href={get_item_href(item)}
 						class:active={i === active_index}
 						aria-current={i === active_index ? 'true' : undefined}
 						onmousedown={(e) => e.preventDefault()}

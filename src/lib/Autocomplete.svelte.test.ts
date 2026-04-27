@@ -8,16 +8,16 @@ beforeEach(() => {
 });
 
 const items = ['apple', 'apricot', 'banana', 'blueberry', 'cherry'];
-const getItemHref = (item: string) => `/packages/${item}`;
+const get_item_href = (item: string) => `/packages/${item}`;
 
 test('renders an input', () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	expect(input.element()).toBeTruthy();
 });
 
 test('typing filters and shows suggestions', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('ap');
@@ -27,7 +27,7 @@ test('typing filters and shows suggestions', async () => {
 });
 
 test('ArrowDown/ArrowUp keyboard navigation', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('b');
@@ -41,19 +41,23 @@ test('ArrowDown/ArrowUp keyboard navigation', async () => {
 });
 
 test('Enter calls onSelectNavigateTo with the active item', async () => {
-	const onSelectNavigateTo = vi.fn();
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo });
+	const on_select_navigate_to = vi.fn();
+	render(Autocomplete, {
+		items,
+		getItemHref: get_item_href,
+		onSelectNavigateTo: on_select_navigate_to
+	});
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('ch');
 	await expect.element(page.getByRole('link', { name: 'cherry' })).toBeVisible();
 	await userEvent.keyboard('{ArrowDown}');
 	await userEvent.keyboard('{Enter}');
-	expect(onSelectNavigateTo).toHaveBeenCalledWith('cherry');
+	expect(on_select_navigate_to).toHaveBeenCalledWith('cherry');
 });
 
 test('Escape closes the dropdown', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('ap');
@@ -63,7 +67,7 @@ test('Escape closes the dropdown', async () => {
 });
 
 test('exact match does not hide dropdown', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('cherry');
@@ -71,7 +75,7 @@ test('exact match does not hide dropdown', async () => {
 });
 
 test('clicking a suggestion uses a real link', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('bl');
@@ -81,7 +85,7 @@ test('clicking a suggestion uses a real link', async () => {
 });
 
 test('suggestions render real links', async () => {
-	render(Autocomplete, { items, getItemHref, onSelectNavigateTo: vi.fn() });
+	render(Autocomplete, { items, getItemHref: get_item_href, onSelectNavigateTo: vi.fn() });
 	const input = page.getByRole('textbox');
 	await userEvent.click(input);
 	await userEvent.keyboard('ap');
