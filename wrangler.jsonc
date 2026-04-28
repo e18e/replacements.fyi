@@ -6,8 +6,7 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
 		"binding": "ASSETS",
-		"directory": ".svelte-kit/cloudflare",
-		"not_found_handling": "404-page"
+		"directory": ".svelte-kit/cloudflare"
 	},
 	"workers_dev": true,
 	"preview_urls": true,
