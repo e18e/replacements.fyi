@@ -1,5 +1,6 @@
 import type { EngineConstraint } from 'module-replacements';
 import type { BrowserEngine, Runtime } from './runtime.svelte';
+import * as semver from 'semver';
 
 export const browser_engines = [
 	'chrome',
@@ -40,40 +41,6 @@ export interface EngineFilterOptions {
 	min_version: string;
 }
 
-function tokenize_version(version: string): string[] {
-	return version.trim().split(/[.-]/).filter(Boolean);
-}
-
-function compare_version_parts(a: string, b: string): number {
-	const a_is_num = /^\d+$/.test(a);
-	const b_is_num = /^\d+$/.test(b);
-
-	if (a_is_num && b_is_num) {
-		const a_num = Number(a);
-		const b_num = Number(b);
-		if (a_num < b_num) return -1;
-		if (a_num > b_num) return 1;
-		return 0;
-	}
-
-	const lexical = a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-	return lexical < 0 ? -1 : lexical > 0 ? 1 : 0;
-}
-
-function compare_versions(a: string, b: string): number {
-	const a_parts = tokenize_version(a);
-	const b_parts = tokenize_version(b);
-	const max = Math.max(a_parts.length, b_parts.length);
-
-	for (let i = 0; i < max; i += 1) {
-		const a_part = a_parts[i] ?? '0';
-		const b_part = b_parts[i] ?? '0';
-		const compared = compare_version_parts(a_part, b_part);
-		if (compared !== 0) return compared;
-	}
-	return 0;
-}
-
 function normalize_min_version(version: string): string {
 	return version.trim();
 }
@@ -89,7 +56,11 @@ function get_target_engine(
 function is_version_compatible(constraint: EngineConstraint, user_min_version: string): boolean {
 	const required_min = normalize_min_version(constraint.minVersion ?? '');
 	if (!required_min) return true;
-	return compare_versions(required_min, user_min_version) <= 0;
+	const required_semver = semver.coerce(required_min);
+	const user_semver = semver.coerce(user_min_version);
+	// Invalid or non-semver-like versions are treated as unknown and allowed.
+	if (!required_semver || !user_semver) return true;
+	return semver.lte(required_semver, user_semver);
 }
 
 export function engines_match_preferences(
