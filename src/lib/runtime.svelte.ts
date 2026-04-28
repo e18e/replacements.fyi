@@ -27,14 +27,14 @@ export const browser_engine_options: { value: BrowserEngine; label: string }[] =
 	{ value: 'firefox', label: 'Firefox' },
 	{ value: 'safari', label: 'Safari' },
 	{ value: 'edge', label: 'Edge' },
-	{ value: 'safari_ios', label: 'Safari iOS' },
-	{ value: 'chrome_android', label: 'Chrome Android' },
-	{ value: 'firefox_android', label: 'Firefox Android' },
-	{ value: 'webview_android', label: 'WebView Android' },
-	{ value: 'webview_ios', label: 'WebView iOS' },
-	{ value: 'samsunginternet_android', label: 'Samsung Internet Android' },
+	{ value: 'safari_ios', label: 'Safari (iOS)' },
+	{ value: 'chrome_android', label: 'Chrome (Android)' },
+	{ value: 'firefox_android', label: 'Firefox (Android)' },
+	{ value: 'webview_android', label: 'WebView (Android)' },
+	{ value: 'webview_ios', label: 'WebView (iOS)' },
+	{ value: 'samsunginternet_android', label: 'Samsung Internet (Android)' },
 	{ value: 'opera', label: 'Opera' },
-	{ value: 'opera_android', label: 'Opera Android' }
+	{ value: 'opera_android', label: 'Opera (Android)' }
 ];
 
 const browser_engine_set = new Set(browser_engine_options.map((item) => item.value));

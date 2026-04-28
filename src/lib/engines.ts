@@ -34,11 +34,11 @@ export function engines_match_runtime(
 	return engines.some((e) => engine_matches_runtime(e.engine, runtime));
 }
 
-export type EngineFilterOptions = {
+export interface EngineFilterOptions {
 	runtime: Runtime;
 	browser_engine: BrowserEngine;
 	min_version: string;
-};
+}
 
 function tokenize_version(version: string): string[] {
 	return version.trim().split(/[.-]/).filter(Boolean);
