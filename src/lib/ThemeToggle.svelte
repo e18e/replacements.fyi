@@ -43,7 +43,7 @@
 	.seg {
 		background: none;
 		border: none;
-		color: var(--subtle);
+		color: var(--subtle-contrast);
 		font-family: inherit;
 		font-size: 0.7rem;
 		padding: 0.3rem 0.55rem;
@@ -63,7 +63,7 @@
 	}
 
 	.seg.active {
-		color: var(--accent);
+		color: var(--accent-contrast);
 		background: color-mix(in srgb, var(--accent) 10%, transparent);
 	}
 </style>

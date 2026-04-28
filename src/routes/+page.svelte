@@ -19,17 +19,19 @@
 	}
 </script>
 
-<div class="page">
+<main class="page">
 	<div class="container">
-		<div class="title">
-			<ReplacementsTitle />
-		</div>
+		<header>
+			<div class="title">
+				<ReplacementsTitle />
+			</div>
 
-		<p class="params">
-			<span class="paren">(</span><span class="param">module_replacements</span><span class="paren"
-				>)</span
-			>
-		</p>
+			<p class="params">
+				<span class="paren">(</span><span class="param">module_replacements</span><span
+					class="paren">)</span
+				>
+			</p>
+		</header>
 
 		<p class="tagline">type a package name. we'll tell you what you don't need.</p>
 
@@ -73,7 +75,7 @@
 
 		<a href={resolve('/packages')} class="all-packages-link">Browse all packages →</a>
 	</div>
-</div>
+</main>
 
 <style>
 	.page {

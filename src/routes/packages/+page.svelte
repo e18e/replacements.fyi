@@ -23,7 +23,7 @@
 
 <a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 
-<div class="page">
+<main class="page">
 	<header class="header">
 		<p class="comment">// all packages</p>
 		<h1>Package Directory</h1>
@@ -53,7 +53,7 @@
 	{#if filtered_packages.length === 0}
 		<p class="no-results">No packages match your search.</p>
 	{/if}
-</div>
+</main>
 
 <style>
 	.page {

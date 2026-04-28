@@ -49,7 +49,7 @@
 		font-family: inherit;
 		font-size: 0.7rem;
 		line-height: 1;
-		color: var(--subtle);
+		color: var(--subtle-contrast);
 		background: var(--surface);
 		border: 1px solid var(--border);
 		border-radius: 6px;

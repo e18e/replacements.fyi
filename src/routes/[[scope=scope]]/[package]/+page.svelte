@@ -89,11 +89,13 @@
 </svelte:head>
 
 <a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
-<div class="page">
+<main class="page">
 	{#if !mapping}
 		<div class="not-found">
-			<p class="comment">// 404</p>
-			<h1>"<span class="pkg">{package_name}</span>" not found</h1>
+			<header>
+				<p class="comment">// 404</p>
+				<h1>"<span class="pkg">{package_name}</span>" not found</h1>
+			</header>
 			<p>we don't have a replacement for "{package_name}"...yet</p>
 			<p>
 				if you have a suggestion, please <a
@@ -211,7 +213,7 @@
 			{/each}
 		</section>
 	{/if}
-</div>
+</main>
 
 <style>
 	.page {
@@ -300,7 +302,7 @@
 	.badge {
 		display: inline-block;
 		background: var(--code-bg);
-		color: var(--accent);
+		color: var(--accent-contrast);
 		padding: 0.15rem 0.5rem;
 		font-size: 0.7rem;
 		border-radius: 4px;
@@ -369,7 +371,7 @@
 	}
 
 	.engine-tab[open] > .tab-btn {
-		background: var(--accent);
+		background: var(--accent-contrast);
 		color: var(--bg);
 	}
 
