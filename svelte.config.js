@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-cloudflare';
 import { all } from 'module-replacements';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -9,7 +9,7 @@ const config = {
 		experimental: { async: true }
 	},
 	kit: {
-		adapter: adapter({ fallback: '404.html' }),
+		adapter: adapter(),
 		experimental: { remoteFunctions: true },
 		prerender: {
 			origin: 'https://replacements.fyi',
