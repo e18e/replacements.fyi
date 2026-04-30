@@ -96,4 +96,52 @@ test.describe('Runtime switcher', () => {
 		await expect(comment).toHaveText('// replacements (0 of 1)');
 		await expect(page.getByText(/No replacements match the/)).toBeVisible();
 	});
+
+	test('filters runtime replacements by minimum node version', async ({ page }) => {
+		// chalk includes util.styleText (nodejs >=20.12.0) plus documented alternatives.
+		await page.goto('/chalk');
+		const comment = page.locator('.replacements > .comment');
+		await expect(comment).toHaveText('// replacements (3)');
+
+		await page.getByRole('combobox', { name: 'Runtime' }).selectOption('nodejs');
+		await page.getByRole('textbox', { name: 'Minimum version' }).fill('20.0.0');
+		await expect(comment).toHaveText('// replacements (2 of 3)');
+		await expect(page.getByRole('heading', { name: 'util.styleText' })).toHaveCount(0);
+
+		await page.getByRole('textbox', { name: 'Minimum version' }).fill('21.0.0');
+		await expect(comment).toHaveText('// replacements (3)');
+		await expect(page.getByRole('heading', { name: 'util.styleText' })).toBeVisible();
+	});
+
+	test('filters browser replacements by selected browser engine version', async ({ page }) => {
+		// clipboard maps to ClipboardAPI (chrome >=66).
+		await page.goto('/clipboard');
+		const comment = page.locator('.replacements > .comment');
+		await expect(comment).toHaveText('// replacements (1)');
+
+		await page.getByRole('combobox', { name: 'Runtime' }).selectOption('browser');
+		await page.getByRole('combobox', { name: 'Browser engine' }).selectOption('chrome');
+		await page.getByRole('textbox', { name: 'Minimum version' }).fill('65');
+		await expect(comment).toHaveText('// replacements (0 of 1)');
+
+		await page.getByRole('textbox', { name: 'Minimum version' }).fill('66');
+		await expect(comment).toHaveText('// replacements (1)');
+	});
+
+	test('persists runtime, browser engine, and min version preferences', async ({ page }) => {
+		await page.goto('/clipboard');
+		await page.getByRole('combobox', { name: 'Runtime' }).selectOption('browser');
+		await page.getByRole('combobox', { name: 'Browser engine' }).selectOption('firefox');
+		await page.getByRole('textbox', { name: 'Minimum version' }).fill('100');
+
+		const cookies = await page.context().cookies();
+		expect(cookies.find((c) => c.name === 'runtime')?.value).toBe('browser');
+		expect(cookies.find((c) => c.name === 'browserEngine')?.value).toBe('firefox');
+		expect(cookies.find((c) => c.name === 'minVersion')?.value).toBe('100');
+
+		await page.reload();
+		await expect(page.getByRole('combobox', { name: 'Runtime' })).toHaveValue('browser');
+		await expect(page.getByRole('combobox', { name: 'Browser engine' })).toHaveValue('firefox');
+		await expect(page.getByRole('textbox', { name: 'Minimum version' })).toHaveValue('100');
+	});
 });
