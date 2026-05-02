@@ -99,7 +99,7 @@
 			<p>we don't have a replacement for "{package_name}"...yet</p>
 			<p>
 				if you have a suggestion, please <a
-					href="https://github.com/e18e/module-replacements/issues/new"
+					href="https://github.com/e18e/module-replacements/issues/new?template=1-replacement.yml"
 					target="_blank"
 					rel="noopener noreferrer">let us know</a
 				>
