@@ -63,7 +63,7 @@
 				<h2>
 					{form.replacements.length > 0
 						? `Found ${form.replacements.length} replacements`
-						: '🎉 No replaceable dependencies found 🎉'}
+						: '🎉 Your dependencies look good!🎉'}
 				</h2>
 				<p class="count">Checked {form.checked} packages from package.json</p>
 			</header>
@@ -106,7 +106,7 @@
 					/>
 					<div class="empty-content">
 						<p class="empty-label">scan complete</p>
-						<h3>Your package.json is clean.</h3>
+						<h3>No replaceable dependencies found</h3>
 						<p class="empty-copy">
 							No packages with native replacements or more performant alternatives were found. Nice
 							work.

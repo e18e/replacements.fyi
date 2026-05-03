@@ -110,9 +110,11 @@ test.describe('Package JSON scanner', () => {
 		await page.getByRole('button', { name: 'Scan package.json' }).click();
 
 		await expect(
-			page.getByRole('heading', { name: '🎉 No replaceable dependencies found 🎉' })
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
 		).toBeVisible();
-		await expect(page.getByRole('heading', { name: 'Your package.json is clean.' })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: 'No replaceable dependencies found ' })
+		).toBeVisible();
 		await expect(
 			page.getByText(
 				'No packages with native replacements or more performant alternatives were found.'
