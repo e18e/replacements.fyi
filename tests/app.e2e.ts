@@ -70,6 +70,67 @@ test.describe('Package detail page', () => {
 	});
 });
 
+test.describe('Package JSON scanner', () => {
+	test('loads with package.json form', async ({ page }) => {
+		await page.goto('/package-json');
+		await expect(page.locator('input[name="package_json"]')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+	});
+
+	test('finds replacements from package.json dependencies', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').fill(
+			JSON.stringify({
+				name: 'express',
+				dependencies: {
+					'body-parser': '^2.2.1',
+					debug: '^4.4.0',
+					qs: '^6.14.2'
+				}
+			})
+		);
+		await page.getByRole('button', { name: 'Scan package.json' }).click();
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
+	});
+
+	test('celebrates when package.json has no replacements', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').fill(
+			JSON.stringify({
+				name: 'clean-package',
+				dependencies: {
+					svelte: '^5.0.0'
+				}
+			})
+		);
+		await page.getByRole('button', { name: 'Scan package.json' }).click();
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: 'No replaceable dependencies found ' })
+		).toBeVisible();
+		await expect(
+			page.getByText(
+				'No packages with native replacements or more performant alternatives were found.'
+			)
+		).toBeVisible();
+	});
+
+	test('shows validation for invalid JSON', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').fill('{');
+		await page.getByRole('button', { name: 'Scan package.json' }).click();
+
+		await expect(page.getByRole('alert')).toContainText('File was not valid JSON');
+	});
+});
+
 test.describe('Runtime switcher', () => {
 	test('defaults to Any and persists selection via cookie', async ({ page }) => {
 		await page.goto('/is-number');
