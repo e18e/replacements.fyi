@@ -97,12 +97,35 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
+	test('celebrates when package.json has no replacements', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').fill(
+			JSON.stringify({
+				name: 'clean-package',
+				dependencies: {
+					svelte: '^5.0.0'
+				}
+			})
+		);
+		await page.getByRole('button', { name: 'Scan package.json' }).click();
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 No replaceable dependencies found 🎉' })
+		).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Your package.json is clean.' })).toBeVisible();
+		await expect(
+			page.getByText(
+				'No packages with native replacements or more performant alternatives were found.'
+			)
+		).toBeVisible();
+	});
+
 	test('shows validation for invalid JSON', async ({ page }) => {
 		await page.goto('/package-json');
 		await page.locator('input[name="package_json"]').fill('{');
 		await page.getByRole('button', { name: 'Scan package.json' }).click();
 
-		await expect(page.getByRole('alert')).toContainText('This is not valid JSON.');
+		await expect(page.getByRole('alert')).toContainText('File was not valid JSON');
 	});
 });
 

@@ -60,7 +60,11 @@
 		<section class="results" aria-live="polite">
 			<header class="results-header">
 				<p class="comment">// scan complete</p>
-				<h2>Found {form.replacements.length} replacements</h2>
+				<h2>
+					{form.replacements.length > 0
+						? `Found ${form.replacements.length} replacements`
+						: '🎉 No replaceable dependencies found 🎉'}
+				</h2>
 				<p class="count">Checked {form.checked} packages from package.json</p>
 			</header>
 
@@ -93,11 +97,22 @@
 				</ul>
 			{:else}
 				<div class="empty-state">
-					<p class="empty-copy">
-						We checked your dependencies against the replacement directory and did not find any
-						matches.
-					</p>
-					<a href={resolve('/packages')} class="empty-link">Browse all known replacements →</a>
+					<img
+						class="empty-gif"
+						src="/clean-package.gif"
+						alt="A person celebrating at a computer"
+						width="260"
+						height="195"
+					/>
+					<div class="empty-content">
+						<p class="empty-label">scan complete</p>
+						<h3>Your package.json is clean.</h3>
+						<p class="empty-copy">
+							No packages with native replacements or more performant alternatives were found. Nice
+							work.
+						</p>
+						<a href={resolve('/packages')} class="empty-link">Browse all known replacements →</a>
+					</div>
 				</div>
 			{/if}
 		</section>
@@ -245,15 +260,51 @@
 	}
 
 	.empty-state {
+		display: grid;
+		grid-template-columns: 160px minmax(0, 1fr);
+		align-items: center;
+		gap: 1rem;
 		margin: 0;
-		padding: 0.25rem 0 0;
+		padding: 1rem;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		background: var(--surface);
+	}
+
+	.empty-gif {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		border-radius: 4px;
+		object-fit: cover;
+	}
+
+	.empty-content {
+		min-width: 0;
+	}
+
+	.empty-label {
+		color: var(--accent);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0;
+		line-height: 1.4;
+		margin: 0 0 0.35rem;
+		text-transform: uppercase;
+	}
+
+	.empty-content h3 {
+		color: var(--text);
+		font-size: 1.1rem;
+		line-height: 1.35;
+		margin: 0 0 0.4rem;
 	}
 
 	.empty-copy {
 		color: var(--muted);
-		font-size: 0.875rem;
-		line-height: 1.6;
-		margin: 0 0 0.875rem;
+		font-size: 0.95rem;
+		line-height: 1.5;
+		margin: 0 0 0.75rem;
 	}
 
 	.empty-link {
@@ -271,6 +322,14 @@
 		.replacement-link {
 			align-items: flex-start;
 			flex-direction: column;
+		}
+
+		.empty-state {
+			grid-template-columns: 1fr;
+		}
+
+		.empty-gif {
+			max-width: 260px;
 		}
 	}
 </style>
