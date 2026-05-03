@@ -20,7 +20,7 @@ export const actions = {
 		try {
 			parsed_json = JSON.parse(package_json.toString());
 		} catch {
-			return fail(400, { package_json, error: 'This is not valid JSON.' });
+			return fail(400, { package_json, error: 'File was not valid JSON.' });
 		}
 
 		if (!is_record(parsed_json)) {
