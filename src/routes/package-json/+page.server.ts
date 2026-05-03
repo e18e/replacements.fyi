@@ -26,7 +26,7 @@ export const actions = {
 		if (!is_record(parsed_json)) {
 			return fail(400, {
 				package_json,
-				error: 'dependencies and devDependencies must be objects.'
+				error: 'File was an invalid format (not an object).'
 			});
 		}
 
