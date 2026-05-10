@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
-	import FilterInput from '$lib/FilterInput.svelte';
+	import ModuleInput from '$lib/ModuleInput.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import { scopify } from '$lib/utils';
 
@@ -31,7 +31,7 @@
 	</header>
 
 	<div class="filters">
-		<FilterInput placeholder="Filter packages..." bind:value={filter} autofocus />
+		<ModuleInput placeholder="Filter packages..." bind:value={filter} autofocus />
 	</div>
 
 	<ul class="package-list">

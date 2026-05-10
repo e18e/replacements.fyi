@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
-	import FilterInput from '$lib/FilterInput.svelte';
+	import ModuleInput from '$lib/ModuleInput.svelte';
 	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
 	import { scopify } from '$lib/utils';
 	import type { PageProps } from './$types';
@@ -39,7 +39,7 @@
 
 	<form method="POST" use:enhance>
 		<div class="filters">
-			<FilterInput
+			<ModuleInput
 				placeholder="Paste in package.json"
 				name="package_json"
 				value={package_json}
