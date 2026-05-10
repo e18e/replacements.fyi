@@ -17,28 +17,27 @@ export const scan_package_json = form(
 	v.object({
 		package_json: package_json_schema
 	}),
-	async ({ package_json }) => {
-		console.log('Fucking here we go');
+	async ({ package_json }, issue) => {
 		let parsed_json: unknown;
 		try {
 			parsed_json = JSON.parse(await package_json.text());
 		} catch {
-			return invalid('File was not valid JSON.');
+			invalid(issue.package_json('File was not valid JSON.'));
 		}
 
 		if (!is_record(parsed_json)) {
-			return invalid('File was an invalid format (not an object).');
+			invalid(issue.package_json('File was an invalid format (not an object).'));
 		}
 
 		if (!parsed_json['devDependencies'] && !parsed_json['dependencies']) {
-			return invalid('No dependencies or devDependencies found.');
+			invalid(issue.package_json('No dependencies or devDependencies found.'));
 		}
 
 		const dev_deps = parsed_json['devDependencies'] ?? {};
 		const prod_deps = parsed_json['dependencies'] ?? {};
 
 		if (!is_record(dev_deps) || !is_record(prod_deps)) {
-			return invalid('dependencies and devDependencies must be objects.');
+			invalid(issue.package_json('dependencies and devDependencies must be objects.'));
 		}
 
 		const replacements = [];

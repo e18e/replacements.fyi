@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import ModuleInput from '$lib/ModuleInput.svelte';
-	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
+	import FileInput from '$lib/FileInput.svelte';
 	import { scopify } from '$lib/utils';
 
 	import { scan_package_json } from './data.remote';
+
+	let file_name = $state('');
 
 	function package_href(package_name: string) {
 		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
@@ -13,6 +14,11 @@
 	function add_view_transition_name(link: HTMLAnchorElement) {
 		const package_name = link.querySelector<HTMLElement>('.package-name');
 		package_name?.style.setProperty('view-transition-name', 'package-name');
+	}
+
+	function handle_file_change(event: Event & { currentTarget: HTMLInputElement }) {
+		file_name = event.currentTarget.files?.[0]?.name ?? '';
+		event.currentTarget.form?.requestSubmit();
 	}
 </script>
 
@@ -29,15 +35,14 @@
 	</header>
 
 	<form {...scan_package_json} enctype="multipart/form-data">
-		<div class="filters">
-			<ModuleInput
-				name="package_json"
-				type="file"
-				accept="application/json,.json"
-				onchange={(event) => event.currentTarget.form?.requestSubmit()}
-			/>
-			<SingleInputSubmitButton aria-label="Scan package.json" />
-		</div>
+		<FileInput
+			name="package_json"
+			accept="application/json,.json"
+			placeholder={!file_name}
+			onchange={handle_file_change}
+		>
+			{file_name || 'Choose package.json'}
+		</FileInput>
 		{#if scan_package_json.fields.package_json.issues()?.[0]?.message}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
@@ -147,22 +152,6 @@
 		color: var(--muted);
 		font-size: 0.9rem;
 		margin: 0;
-	}
-
-	.filters {
-		display: flex;
-		flex: 1;
-		align-items: center;
-		margin-bottom: 1.5rem;
-		border: 1px solid var(--border-strong);
-		border-radius: 6px;
-		background: var(--input-bg);
-		overflow: visible;
-		transition: border-color 0.15s;
-	}
-
-	.filters:focus-within {
-		border-color: var(--accent);
 	}
 
 	.error {
