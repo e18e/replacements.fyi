@@ -1,50 +1,44 @@
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import * as v from 'valibot';
+import { form } from '$app/server';
+import { invalid } from '@sveltejs/kit';
 import { all } from 'module-replacements';
-export const prerender = false;
+
+const package_json_schema = v.pipe(
+	v.file('Please select a package.json file.'),
+	v.mimeType(['application/json'], 'Only valid JSON files are accepted.'),
+	v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10 MB.')
+);
 
 function is_record(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-export const actions = {
-	default: async ({ request }) => {
-		const data = await request.formData();
-		const package_json = data.get('package_json');
-
-		if (!package_json) {
-			return fail(400, { package_json, error: 'Paste a package.json file to scan.' });
-		}
-
+export const scan_package_json = form(
+	v.object({
+		package_json: package_json_schema
+	}),
+	async ({ package_json }) => {
+		console.log('Fucking here we go');
 		let parsed_json: unknown;
 		try {
-			parsed_json = JSON.parse(package_json.toString());
+			parsed_json = JSON.parse(await package_json.text());
 		} catch {
-			return fail(400, { package_json, error: 'File was not valid JSON.' });
+			return invalid('File was not valid JSON.');
 		}
 
 		if (!is_record(parsed_json)) {
-			return fail(400, {
-				package_json,
-				error: 'File was an invalid format (not an object).'
-			});
+			return invalid('File was an invalid format (not an object).');
 		}
 
 		if (!parsed_json['devDependencies'] && !parsed_json['dependencies']) {
-			return fail(400, {
-				package_json,
-				error: 'No dependencies or devDependencies found.'
-			});
+			return invalid('No dependencies or devDependencies found.');
 		}
 
 		const dev_deps = parsed_json['devDependencies'] ?? {};
 		const prod_deps = parsed_json['dependencies'] ?? {};
 
 		if (!is_record(dev_deps) || !is_record(prod_deps)) {
-			return fail(400, {
-				package_json,
-				error: 'dependencies and devDependencies must be objects.'
-			});
+			return invalid('dependencies and devDependencies must be objects.');
 		}
 
 		const replacements = [];
@@ -64,4 +58,4 @@ export const actions = {
 			replacements
 		};
 	}
-} satisfies Actions;
+);

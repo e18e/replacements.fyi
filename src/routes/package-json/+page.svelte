@@ -1,14 +1,10 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import ModuleInput from '$lib/ModuleInput.svelte';
 	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
 	import { scopify } from '$lib/utils';
-	import type { PageProps } from './$types';
 
-	let { form }: PageProps = $props();
-
-	let package_json = $derived(typeof form?.package_json === 'string' ? form.package_json : '');
+	import { scan_package_json } from './data.remote';
 
 	function package_href(package_name: string) {
 		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
@@ -17,11 +13,6 @@
 	function add_view_transition_name(link: HTMLAnchorElement) {
 		const package_name = link.querySelector<HTMLElement>('.package-name');
 		package_name?.style.setProperty('view-transition-name', 'package-name');
-	}
-
-	function handle_on_input(event: Event & { currentTarget: HTMLInputElement }) {
-		if (!(event instanceof InputEvent) || event.inputType !== 'insertFromPaste') return;
-		event.currentTarget.form?.requestSubmit();
 	}
 </script>
 
@@ -37,40 +28,39 @@
 		<p class="count">Scan package.json for replacements</p>
 	</header>
 
-	<form method="POST" use:enhance>
+	<form {...scan_package_json} enctype="multipart/form-data">
 		<div class="filters">
 			<ModuleInput
-				placeholder="Paste in package.json"
 				name="package_json"
-				value={package_json}
-				oninput={handle_on_input}
-				autofocus
+				type="file"
+				accept="application/json,.json"
+				onchange={(event) => event.currentTarget.form?.requestSubmit()}
 			/>
 			<SingleInputSubmitButton aria-label="Scan package.json" />
 		</div>
-		{#if form?.error}
+		{#if scan_package_json.fields.package_json.issues()?.[0]?.message}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
-				<span>{form.error}</span>
+				<span>{scan_package_json.fields.package_json.issues()?.[0]?.message}</span>
 			</p>
 		{/if}
 	</form>
 
-	{#if form?.success}
+	{#if scan_package_json.result}
 		<section class="results" aria-live="polite">
 			<header class="results-header">
 				<p class="comment">// scan complete</p>
 				<h2>
-					{form.replacements.length > 0
-						? `Found ${form.replacements.length} replacements`
+					{scan_package_json.result.replacements.length > 0
+						? `Found ${scan_package_json.result.replacements.length} replacements`
 						: '🎉 Your dependencies look good!🎉'}
 				</h2>
-				<p class="count">Checked {form.checked} packages from package.json</p>
+				<p class="count">Checked {scan_package_json.result.checked} packages from package.json</p>
 			</header>
 
-			{#if form.replacements.length > 0}
+			{#if scan_package_json.result.replacements.length > 0}
 				<ul class="replacement-list">
-					{#each form.replacements as replacement (replacement.dep)}
+					{#each scan_package_json.result.replacements as replacement (replacement.dep)}
 						<li>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
