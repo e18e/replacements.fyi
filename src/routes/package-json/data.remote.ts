@@ -14,16 +14,16 @@ function is_record(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-type PackageJsonScanResult =
-	| { success: false; error: string }
-	| {
-			success: true;
-			checked: number;
-			replacements: {
-				dep: string;
-				replacement: ModuleReplacementMapping;
-			}[];
-	  };
+export type PackageJSONScanSuccessResult = {
+	success: true;
+	checked: number;
+	replacements: {
+		dep: string;
+		replacement: ModuleReplacementMapping;
+	}[];
+};
+
+type PackageJsonScanResult = { success: false; error: string } | PackageJSONScanSuccessResult;
 
 function eval_package_json(package_json_string: string): PackageJsonScanResult {
 	let parsed_json: unknown;
@@ -85,26 +85,8 @@ export const scan_package_json_paste = command(
 	v.object({
 		package_json: v.string()
 	}),
-	async ({ package_json }) => {
-		const result = eval_package_json(package_json);
-
-		if (!result.success) {
-			return { success: false, error: result.error };
-		}
-
-		return {
-			success: true,
-			checked: result.checked,
-			replacements: result.replacements
-		};
-	}
-);
-
-export const scan_package_json_file_paste = command(
-	v.object({
-		package_json: v.string()
-	}),
-	async ({ package_json }) => {
+	async ({ package_json }): Promise<PackageJsonScanResult> => {
+		console.log('Evaluating package.json from paste', { package_json });
 		const result = eval_package_json(package_json);
 
 		if (!result.success) {

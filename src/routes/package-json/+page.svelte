@@ -1,11 +1,24 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import FileInput from '$lib/FileInput.svelte';
 	import { scopify } from '$lib/utils';
 
-	import { scan_package_json_file } from './data.remote';
+	import {
+		scan_package_json_file,
+		scan_package_json_paste,
+		type PackageJSONScanSuccessResult
+	} from './data.remote';
 
 	let file_name = $state('');
+	let paste_result = $state<PackageJSONScanSuccessResult | null>(null);
+	let paste_error = $state('');
+
+	// TODO: Add loading state
+	let scan_result = $derived(paste_result ?? scan_package_json_file.result);
+	let scan_error = $derived(
+		paste_error || scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
+	);
 
 	function package_href(package_name: string) {
 		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
@@ -20,6 +33,72 @@
 		file_name = event.currentTarget.files?.[0]?.name ?? '';
 		event.currentTarget.form?.requestSubmit();
 	}
+
+	function is_paste_package_json(package_json: string) {
+		try {
+			JSON.parse(package_json);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	async function handle_paste(event: ClipboardEvent) {
+		console.log('paste event', event.clipboardData);
+		const package_json = event.clipboardData?.getData('text/plain')?.trim();
+		const file = event.clipboardData?.files[0];
+
+		if (package_json && is_paste_package_json(package_json)) {
+			const result = await scan_package_json_paste({ package_json });
+			if (result.success) {
+				paste_result = result;
+				return;
+			}
+			paste_error = result.error;
+		}
+
+		if (file && file?.type === 'application/json') {
+			const text = await file.text();
+			const result = await scan_package_json_paste({ package_json: text });
+			if (result.success) {
+				paste_result = result;
+			} else {
+				paste_error = result.error;
+			}
+		}
+
+		// TODO: Handle pasted file path
+	}
+
+	function handle_dragover(event: DragEvent) {
+		event.preventDefault();
+	}
+
+	async function handle_drop(event: DragEvent) {
+		event.preventDefault();
+		const file = event.dataTransfer?.files[0];
+		if (file && file.type === 'application/json') {
+			const text = await file.text();
+			const result = await scan_package_json_paste({ package_json: text });
+			if (result.success) {
+				paste_result = result;
+			} else {
+				paste_error = result.error;
+			}
+		}
+	}
+
+	onMount(() => {
+		window.addEventListener('dragover', handle_dragover);
+		window.addEventListener('drop', handle_drop);
+		window.addEventListener('paste', handle_paste);
+
+		return () => {
+			window.removeEventListener('dragover', handle_dragover);
+			window.removeEventListener('drop', handle_drop);
+			window.removeEventListener('paste', handle_paste);
+		};
+	});
 </script>
 
 <svelte:head>
@@ -43,31 +122,31 @@
 		>
 			{file_name || 'Choose package.json'}
 		</FileInput>
-		{#if scan_package_json_file.fields.package_json.issues()?.[0]?.message}
+		{#if scan_error}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
-				<span>{scan_package_json_file.fields.package_json.issues()?.[0]?.message}</span>
+				<span>{scan_error}</span>
 			</p>
 		{/if}
 	</form>
 
-	{#if scan_package_json_file.result}
+	{#if scan_result}
 		<section class="results" aria-live="polite">
 			<header class="results-header">
 				<p class="comment">// scan complete</p>
 				<h2>
-					{scan_package_json_file.result.replacements.length > 0
-						? `Found ${scan_package_json_file.result.replacements.length} replacements`
+					{scan_result.replacements.length > 0
+						? `Found ${scan_result.replacements.length} replacements`
 						: '🎉 Your dependencies look good!🎉'}
 				</h2>
 				<p class="count">
-					Checked {scan_package_json_file.result.checked} packages from package.json
+					Checked {scan_result.checked} packages from package.json
 				</p>
 			</header>
 
-			{#if scan_package_json_file.result.replacements.length > 0}
+			{#if scan_result.replacements.length > 0}
 				<ul class="replacement-list">
-					{#each scan_package_json_file.result.replacements as replacement (replacement.dep)}
+					{#each scan_result.replacements as replacement (replacement.dep)}
 						<li>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
