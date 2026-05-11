@@ -66,7 +66,7 @@ function eval_package_json(package_json_string: string): PackageJsonScanResult {
 	};
 }
 
-export const scan_package_json = form(
+export const scan_package_json_file = form(
 	v.object({
 		package_json: package_json_schema
 	}),
@@ -82,6 +82,25 @@ export const scan_package_json = form(
 );
 
 export const scan_package_json_paste = command(
+	v.object({
+		package_json: v.string()
+	}),
+	async ({ package_json }) => {
+		const result = eval_package_json(package_json);
+
+		if (!result.success) {
+			return { success: false, error: result.error };
+		}
+
+		return {
+			success: true,
+			checked: result.checked,
+			replacements: result.replacements
+		};
+	}
+);
+
+export const scan_package_json_file_paste = command(
 	v.object({
 		package_json: v.string()
 	}),

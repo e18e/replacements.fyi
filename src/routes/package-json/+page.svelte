@@ -3,7 +3,7 @@
 	import FileInput from '$lib/FileInput.svelte';
 	import { scopify } from '$lib/utils';
 
-	import { scan_package_json } from './data.remote';
+	import { scan_package_json_file } from './data.remote';
 
 	let file_name = $state('');
 
@@ -34,7 +34,7 @@
 		<p class="count">Scan package.json for replacements</p>
 	</header>
 
-	<form {...scan_package_json} enctype="multipart/form-data">
+	<form {...scan_package_json_file} enctype="multipart/form-data">
 		<FileInput
 			name="package_json"
 			accept="application/json,.json"
@@ -43,29 +43,31 @@
 		>
 			{file_name || 'Choose package.json'}
 		</FileInput>
-		{#if scan_package_json.fields.package_json.issues()?.[0]?.message}
+		{#if scan_package_json_file.fields.package_json.issues()?.[0]?.message}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
-				<span>{scan_package_json.fields.package_json.issues()?.[0]?.message}</span>
+				<span>{scan_package_json_file.fields.package_json.issues()?.[0]?.message}</span>
 			</p>
 		{/if}
 	</form>
 
-	{#if scan_package_json.result}
+	{#if scan_package_json_file.result}
 		<section class="results" aria-live="polite">
 			<header class="results-header">
 				<p class="comment">// scan complete</p>
 				<h2>
-					{scan_package_json.result.replacements.length > 0
-						? `Found ${scan_package_json.result.replacements.length} replacements`
+					{scan_package_json_file.result.replacements.length > 0
+						? `Found ${scan_package_json_file.result.replacements.length} replacements`
 						: '🎉 Your dependencies look good!🎉'}
 				</h2>
-				<p class="count">Checked {scan_package_json.result.checked} packages from package.json</p>
+				<p class="count">
+					Checked {scan_package_json_file.result.checked} packages from package.json
+				</p>
 			</header>
 
-			{#if scan_package_json.result.replacements.length > 0}
+			{#if scan_package_json_file.result.replacements.length > 0}
 				<ul class="replacement-list">
-					{#each scan_package_json.result.replacements as replacement (replacement.dep)}
+					{#each scan_package_json_file.result.replacements as replacement (replacement.dep)}
 						<li>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
