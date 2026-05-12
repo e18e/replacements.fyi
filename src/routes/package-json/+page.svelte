@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import FileInput from '$lib/FileInput.svelte';
+	import { eval_package_json, type PackageJSONScanSuccessResult } from '$lib/package-json-scan';
 	import { scopify } from '$lib/utils';
 
-	import {
-		scan_package_json_file,
-		scan_package_json_paste,
-		type PackageJSONScanSuccessResult
-	} from './data.remote';
+	import { scan_package_json_file } from './data.remote';
 
 	let file_name = $state('');
 	let paste_result = $state<PackageJSONScanSuccessResult | null>(null);
@@ -48,7 +45,7 @@
 		const file = event.clipboardData?.files[0];
 
 		if (package_json && is_paste_package_json(package_json)) {
-			const result = await scan_package_json_paste({ package_json });
+			const result = eval_package_json(package_json);
 			if (result.success) {
 				paste_result = result;
 				return;
@@ -58,7 +55,7 @@
 
 		if (file && file?.type === 'application/json') {
 			const text = await file.text();
-			const result = await scan_package_json_paste({ package_json: text });
+			const result = eval_package_json(text);
 			if (result.success) {
 				paste_result = result;
 			} else {
@@ -78,7 +75,7 @@
 		const file = event.dataTransfer?.files[0];
 		if (file && file.type === 'application/json') {
 			const text = await file.text();
-			const result = await scan_package_json_paste({ package_json: text });
+			const result = eval_package_json(text);
 			if (result.success) {
 				paste_result = result;
 			} else {
