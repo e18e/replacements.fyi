@@ -167,7 +167,6 @@
 								</span>
 								<span class="details-link">View details →</span>
 							</a>
-							<!-- eslint-enable svelte/no-navigation-without-resolve -->
 						</li>
 					{/each}
 				</ul>
