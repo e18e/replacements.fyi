@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import FileInput from '$lib/FileInput.svelte';
 	import { scopify } from '$lib/utils';
@@ -87,19 +86,9 @@
 			}
 		}
 	}
-
-	onMount(() => {
-		window.addEventListener('dragover', handle_dragover);
-		window.addEventListener('drop', handle_drop);
-		window.addEventListener('paste', handle_paste);
-
-		return () => {
-			window.removeEventListener('dragover', handle_dragover);
-			window.removeEventListener('drop', handle_drop);
-			window.removeEventListener('paste', handle_paste);
-		};
-	});
 </script>
+
+<svelte:window ondragover={handle_dragover} ondrop={handle_drop} onpaste={handle_paste} />
 
 <svelte:head>
 	<title>Scan package.json - replacements.fyi</title>
