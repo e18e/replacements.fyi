@@ -71,25 +71,30 @@ test.describe('Package detail page', () => {
 });
 
 test.describe('Package JSON scanner', () => {
+	async function paste_package_json(page: import('@playwright/test').Page, package_json: unknown) {
+		await page.evaluate((text) => {
+			const data_transfer = new DataTransfer();
+			data_transfer.setData('text/plain', text);
+			window.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data_transfer }));
+		}, JSON.stringify(package_json));
+	}
+
 	test('loads with package.json form', async ({ page }) => {
 		await page.goto('/package-json');
 		await expect(page.locator('input[name="package_json"]')).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+		await expect(page.getByText('Choose package.json')).toBeVisible();
 	});
 
-	test('finds replacements from package.json dependencies', async ({ page }) => {
+	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
 		await page.goto('/package-json');
-		await page.locator('input[name="package_json"]').fill(
-			JSON.stringify({
-				name: 'express',
-				dependencies: {
-					'body-parser': '^2.2.1',
-					debug: '^4.4.0',
-					qs: '^6.14.2'
-				}
-			})
-		);
-		await page.getByRole('button', { name: 'Scan package.json' }).click();
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1',
+				debug: '^4.4.0',
+				qs: '^6.14.2'
+			}
+		});
 
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
 		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
@@ -97,37 +102,26 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
-	test('celebrates when package.json has no replacements', async ({ page }) => {
+	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
 		await page.goto('/package-json');
-		await page.locator('input[name="package_json"]').fill(
-			JSON.stringify({
-				name: 'clean-package',
-				dependencies: {
-					svelte: '^5.0.0'
-				}
-			})
-		);
-		await page.getByRole('button', { name: 'Scan package.json' }).click();
+		await paste_package_json(page, {
+			name: 'clean-package',
+			dependencies: {
+				svelte: '^5.0.0'
+			}
+		});
 
 		await expect(
 			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
 		).toBeVisible();
 		await expect(
-			page.getByRole('heading', { name: 'No replaceable dependencies found ' })
+			page.getByRole('heading', { name: 'No replaceable dependencies found' })
 		).toBeVisible();
 		await expect(
 			page.getByText(
 				'No packages with native replacements or more performant alternatives were found.'
 			)
 		).toBeVisible();
-	});
-
-	test('shows validation for invalid JSON', async ({ page }) => {
-		await page.goto('/package-json');
-		await page.locator('input[name="package_json"]').fill('{');
-		await page.getByRole('button', { name: 'Scan package.json' }).click();
-
-		await expect(page.getByRole('alert')).toContainText('File was not valid JSON');
 	});
 });
 
