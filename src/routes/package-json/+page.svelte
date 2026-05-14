@@ -1,19 +1,17 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import FileInput from '$lib/FileInput.svelte';
-	import { eval_package_json, type PackageJSONScanSuccessResult } from '$lib/package-json-scan';
+	import { eval_package_json } from '$lib/package-json-scan';
 	import { scopify } from '$lib/utils';
 
 	import { scan_package_json_file } from './data.remote';
 
 	let file_name = $state('');
-	let paste_result = $state<PackageJSONScanSuccessResult | null>(null);
-	let paste_error = $state('');
 
 	// TODO: Add loading state
-	let scan_result = $derived(paste_result ?? scan_package_json_file.result);
+	let scan_result = $derived(scan_package_json_file.result);
 	let scan_error = $derived(
-		paste_error || scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
+		scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
 	);
 
 	function package_href(package_name: string) {
@@ -47,19 +45,21 @@
 		if (package_json && is_paste_package_json(package_json)) {
 			const result = eval_package_json(package_json);
 			if (result.success) {
-				paste_result = result;
+				scan_result = result;
+				scan_error = '';
 				return;
 			}
-			paste_error = result.error;
+			scan_error = result.error;
 		}
 
 		if (file && file?.type === 'application/json') {
 			const text = await file.text();
 			const result = eval_package_json(text);
 			if (result.success) {
-				paste_result = result;
+				scan_result = result;
+				scan_error = '';
 			} else {
-				paste_error = result.error;
+				scan_error = result.error;
 			}
 		}
 
@@ -77,9 +77,10 @@
 			const text = await file.text();
 			const result = eval_package_json(text);
 			if (result.success) {
-				paste_result = result;
+				scan_result = result;
+				scan_error = '';
 			} else {
-				paste_error = result.error;
+				scan_error = result.error;
 			}
 		}
 	}
