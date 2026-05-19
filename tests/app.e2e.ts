@@ -147,6 +147,25 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
 	});
 
+	test('clears previous scan results after navigating away and back', async ({ page }) => {
+		await page.goto('/package-json');
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1',
+				debug: '^4.4.0',
+				qs: '^6.14.2'
+			}
+		});
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await page.goto('/');
+		await page.getByRole('link', { name: 'Scan package.json →' }).click();
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toHaveCount(0);
+		await expect(page.getByText('or paste the content of your package.json')).toBeVisible();
+	});
+
 	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
 		await page.goto('/package-json');
 		await paste_package_json(page, {

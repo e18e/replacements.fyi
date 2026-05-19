@@ -11,7 +11,6 @@
 	let file_name = $state('');
 	let pasted_successfully = $state(false);
 
-	// TODO: Add loading state
 	let scan_result = $derived(scan_package_json_file.result);
 	let scan_error = $derived(
 		scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
@@ -26,10 +25,21 @@
 		package_name?.style.setProperty('view-transition-name', 'package-name');
 	}
 
-	function handle_file_change(event: Event & { currentTarget: HTMLInputElement }) {
-		file_name = event.currentTarget.files?.[0]?.name ?? '';
-		pasted_successfully = false;
-		event.currentTarget.form?.requestSubmit();
+	async function handle_file_change(event: Event & { currentTarget: HTMLInputElement }) {
+		const file = event.currentTarget.files?.[0];
+		if (file) {
+			const text = await file.text();
+			const result = eval_package_json(text);
+			if (result.success) {
+				scan_result = result;
+				scan_error = '';
+				file_name = file.name;
+				pasted_successfully = false;
+			} else {
+				scan_error = result.error;
+				pasted_successfully = false;
+			}
+		}
 	}
 
 	function is_paste_package_json(package_json: string) {
@@ -147,17 +157,15 @@
 				</span>
 			{/if}
 		</FileInput>
-		<noscript>
-			<span class="no-js-submit-row">
-				<button class="no-js-submit" type="submit">Scan package.json</button>
-			</span>
-		</noscript>
 		{#if scan_error}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
 				<span>{scan_error}</span>
 			</p>
 		{/if}
+		<span class="no-js-submit-row">
+			<button class="no-js-submit" type="submit">Scan package.json</button>
+		</span>
 	</form>
 
 	<PackageJsonPasteStatus pasted={pasted_successfully} />
@@ -291,21 +299,27 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0.7rem 0.9rem;
-		border: 1px solid var(--accent);
+		padding: 0.3rem 0.55rem;
+		border: 1px solid var(--border);
 		border-radius: 6px;
-		background: var(--accent);
-		color: var(--surface);
+		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		color: var(--accent-contrast);
 		cursor: pointer;
-		font: inherit;
-		font-weight: 700;
+		font-family: inherit;
+		font-size: 0.7rem;
+		font-weight: 400;
 		line-height: 1;
+		transition:
+			color 0.15s,
+			background 0.15s,
+			border-color 0.15s;
 	}
 
 	.no-js-submit:hover,
 	.no-js-submit:focus-visible {
-		background: var(--accent-hover);
-		border-color: var(--accent-hover);
+		background: color-mix(in srgb, var(--accent) 15%, transparent);
+		border-color: var(--border);
+		color: var(--accent-contrast);
 	}
 
 	.error {
