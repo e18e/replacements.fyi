@@ -301,23 +301,25 @@
 
 	.scan-submit-row {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: stretch;
 		margin: 0 0 1.5rem;
 	}
 
 	.no-js-submit {
+		width: 100%;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0.3rem 0.55rem;
+		min-height: 2.25rem;
+		padding: 0.4rem 1rem;
 		border: 1px solid var(--border);
 		border-radius: 6px;
 		background: color-mix(in srgb, var(--accent) 10%, transparent);
 		color: var(--accent-contrast);
 		cursor: pointer;
 		font-family: inherit;
-		font-size: 0.7rem;
-		font-weight: 400;
+		font-size: 0.875rem;
+		font-weight: 600;
 		line-height: 1;
 		transition:
 			color 0.15s,
