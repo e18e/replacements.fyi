@@ -171,7 +171,7 @@
 		{/if}
 	</form>
 
-	{#if scan_result}
+	{#if scan_result && !scan_error}
 		<section class="results" aria-live="polite">
 			<header class="results-header">
 				<p class="comment">// scan complete</p>
