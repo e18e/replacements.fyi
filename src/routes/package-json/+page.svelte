@@ -158,6 +158,8 @@
 					</span>
 				{/if}
 			</FileInput>
+		</div>
+		<div class="scan-submit-row">
 			<button class="no-js-submit" type="submit">Scan package.json</button>
 		</div>
 		{#if scan_error}
@@ -290,23 +292,20 @@
 	}
 
 	.package-json-upload {
-		position: relative;
-		margin-bottom: 1.5rem;
+		margin-bottom: 0.45rem;
 	}
 
 	.package-json-upload :global(.file-input) {
 		margin-bottom: 0;
 	}
 
-	.package-json-upload :global(.file-input-content) {
-		padding-bottom: 2.9rem;
+	.scan-submit-row {
+		display: flex;
+		justify-content: flex-end;
+		margin: 0 0 1.5rem;
 	}
 
 	.no-js-submit {
-		position: absolute;
-		right: 0.75rem;
-		bottom: 0.75rem;
-		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
