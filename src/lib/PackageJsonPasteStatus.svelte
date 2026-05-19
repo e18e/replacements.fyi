@@ -26,7 +26,7 @@
 		</svg>
 		<span>pasted successfully</span>
 	{:else}
-		<p>or paste the content of your package.json</p>
+		<p>Paste the content of your package.json or</p>
 	{/if}
 </div>
 

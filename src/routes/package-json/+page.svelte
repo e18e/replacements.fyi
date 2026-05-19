@@ -124,6 +124,7 @@
 		<p class="count">Scan package.json for replacements</p>
 	</header>
 
+	<PackageJsonPasteStatus pasted={pasted_successfully} />
 	<form {...scan_package_json_file} enctype="multipart/form-data">
 		<div class="package-json-upload">
 			<FileInput
@@ -169,8 +170,6 @@
 			</p>
 		{/if}
 	</form>
-
-	<PackageJsonPasteStatus pasted={pasted_successfully} />
 
 	{#if scan_result}
 		<section class="results" aria-live="polite">
