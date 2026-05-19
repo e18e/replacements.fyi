@@ -18,6 +18,18 @@ test.describe('Home page', () => {
 		await expect(link).toHaveAttribute('href', /e18e\.dev/);
 	});
 
+	test('has package navigation links', async ({ page }) => {
+		await page.goto('/');
+		await expect(page.getByRole('link', { name: 'Browse all packages →' })).toHaveAttribute(
+			'href',
+			'/packages'
+		);
+		await expect(page.getByRole('link', { name: 'Scan package.json →' })).toHaveAttribute(
+			'href',
+			'/package-json'
+		);
+	});
+
 	test('typing in search shows autocomplete suggestions', async ({ page }) => {
 		await page.goto('/');
 		const input = page.locator('input[name="package"]');
@@ -72,17 +84,29 @@ test.describe('Package detail page', () => {
 
 test.describe('Package JSON scanner', () => {
 	async function paste_package_json(page: import('@playwright/test').Page, package_json: unknown) {
-		await page.evaluate((text) => {
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+
+		const paste_dispatched = await page.evaluate((text) => {
 			const data_transfer = new DataTransfer();
 			data_transfer.setData('text/plain', text);
-			window.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data_transfer }));
+			const event = new Event('paste', { bubbles: true, cancelable: true });
+			Object.defineProperty(event, 'clipboardData', {
+				value: data_transfer
+			});
+			return window.dispatchEvent(event);
 		}, JSON.stringify(package_json));
+
+		expect(paste_dispatched).toBe(true);
 	}
 
 	test('loads with package.json form', async ({ page }) => {
 		await page.goto('/package-json');
 		await expect(page.locator('input[name="package_json"]')).toBeVisible();
-		await expect(page.getByText('Choose package.json')).toBeVisible();
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await expect(page.getByText('Drag file or')).toBeVisible();
+		await expect(page.getByText('Select Here')).toBeVisible();
+		await expect(page.getByText('or paste the content of your package.json')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).toHaveCount(0);
 	});
 
 	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
@@ -96,10 +120,31 @@ test.describe('Package JSON scanner', () => {
 			}
 		});
 
+		await expect(page.getByText('pasted successfully')).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
 		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
 		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
+	});
+
+	test('shows selected package.json file details after file upload', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').setInputFiles({
+			name: 'package.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(
+				JSON.stringify({
+					name: 'express',
+					dependencies: {
+						'body-parser': '^2.2.1'
+					}
+				})
+			)
+		});
+
+		await expect(page.getByText('package.json', { exact: true })).toBeVisible();
+		await expect(page.getByText('pasted successfully')).toHaveCount(0);
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
 	});
 
 	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
@@ -122,6 +167,16 @@ test.describe('Package JSON scanner', () => {
 				'No packages with native replacements or more performant alternatives were found.'
 			)
 		).toBeVisible();
+	});
+
+	test('shows a submit button when JavaScript is disabled', async ({ browser }) => {
+		const context = await browser.newContext({ javaScriptEnabled: false });
+		const page = await context.newPage();
+
+		await page.goto('/package-json');
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+
+		await context.close();
 	});
 });
 

@@ -75,6 +75,7 @@
 		>
 
 		<a href={resolve('/packages')} class="all-packages-link">Browse all packages →</a>
+		<a href={resolve('/package-json')} class="all-packages-link">Scan package.json →</a>
 	</div>
 </main>
 
