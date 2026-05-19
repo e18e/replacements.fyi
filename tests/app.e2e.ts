@@ -107,6 +107,9 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByText('Select Here')).toBeVisible();
 		await expect(page.getByText('or paste the content of your package.json')).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+		await expect(page.locator('label.file-input button', { hasText: 'Scan package.json' })).toHaveCount(
+			0
+		);
 	});
 
 	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
