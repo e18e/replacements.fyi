@@ -103,7 +103,7 @@ test.describe('Package JSON scanner', () => {
 		await page.goto('/package-json');
 		await expect(page.locator('input[name="package_json"]')).toBeVisible();
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
-		await expect(page.getByText('Drag file or')).toBeVisible();
+		await expect(page.getByText('Drag a file or')).toBeVisible();
 		await expect(page.getByText('Select Here')).toBeVisible();
 		await expect(page.getByText('Paste the content of your package.json')).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
@@ -145,7 +145,7 @@ test.describe('Package JSON scanner', () => {
 			)
 		});
 
-		await expect(page.getByText('package.json', { exact: true })).toBeVisible();
+		await expect(page.locator('input[name="package_json"]')).toHaveValue(/package\.json/);
 		await expect(page.getByText('pasted successfully')).toHaveCount(0);
 		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
 	});
