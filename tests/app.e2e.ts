@@ -105,7 +105,7 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await expect(page.getByText('Drag file or')).toBeVisible();
 		await expect(page.getByText('Select Here')).toBeVisible();
-		await expect(page.getByText('or paste the content of your package.json')).toBeVisible();
+		await expect(page.getByText('Paste the content of your package.json')).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
 		await expect(
 			page.locator('label.file-input button', { hasText: 'Scan package.json' })
@@ -166,7 +166,7 @@ test.describe('Package JSON scanner', () => {
 		await page.getByRole('link', { name: 'Scan package.json →' }).click();
 
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toHaveCount(0);
-		await expect(page.getByText('or paste the content of your package.json')).toBeVisible();
+		await expect(page.getByText('Paste the content of your package.json or')).toBeVisible();
 	});
 
 	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
