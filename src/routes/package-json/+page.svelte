@@ -125,7 +125,12 @@
 	</header>
 
 	<PackageJsonPasteStatus pasted={pasted_successfully} />
-	<form {...scan_package_json_file} enctype="multipart/form-data">
+	<form
+		{...scan_package_json_file.enhance(() => {
+			// prevents the form to submit when JS is available since we handle that on file change
+		})}
+		enctype="multipart/form-data"
+	>
 		<div class="package-json-upload">
 			<FileInput
 				name="package_json"
