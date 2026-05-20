@@ -191,11 +191,28 @@ test.describe('Package JSON scanner', () => {
 		).toBeVisible();
 	});
 
-	test('shows a submit button when JavaScript is disabled', async ({ browser }) => {
+	test('shows a submit button when JavaScript is disabled but only when a file is selected', async ({
+		browser
+	}) => {
 		const context = await browser.newContext({ javaScriptEnabled: false });
 		const page = await context.newPage();
 
 		await page.goto('/package-json');
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).not.toBeVisible();
+
+		await page.locator('input[name="package_json"]').setInputFiles({
+			name: 'package.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(
+				JSON.stringify({
+					name: 'express',
+					dependencies: {
+						'body-parser': '^2.2.1'
+					}
+				})
+			)
+		});
+
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
 
 		await context.close();
