@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
 	import FileInput from '$lib/FileInput.svelte';
 	import PackageJsonPasteStatus from '$lib/PackageJsonPasteStatus.svelte';
@@ -134,6 +135,7 @@
 		<div class="package-json-upload">
 			<FileInput
 				name="package_json"
+				required
 				accept="application/json,.json"
 				placeholder={!file_name}
 				selected={Boolean(file_name)}
@@ -146,7 +148,7 @@
 				</span>
 			</FileInput>
 		</div>
-		<div class="scan-submit-row">
+		<div class={['scan-submit-row', { browser }]}>
 			<button class="no-js-submit" type="submit">Scan package.json</button>
 		</div>
 		{#if scan_error}
@@ -288,6 +290,14 @@
 		display: flex;
 		justify-content: stretch;
 		margin: 0 0 1.5rem;
+	}
+	.browser {
+		display: none;
+	}
+	form:has(:global(input:invalid)) {
+		.scan-submit-row {
+			display: none;
+		}
 	}
 
 	.no-js-submit {
