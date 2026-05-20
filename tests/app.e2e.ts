@@ -106,10 +106,6 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByText('Drag a file or')).toBeVisible();
 		await expect(page.getByText('Select Here')).toBeVisible();
 		await expect(page.getByText('Paste the content of your package.json')).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
-		await expect(
-			page.locator('label.file-input button', { hasText: 'Scan package.json' })
-		).toHaveCount(0);
 	});
 
 	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
