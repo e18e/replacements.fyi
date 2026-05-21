@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import FileInput from '$lib/FileInput.svelte';
 	import PackageJsonPasteStatus from '$lib/PackageJsonPasteStatus.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
@@ -8,13 +9,36 @@
 	import { scopify } from '$lib/utils';
 
 	import { scan_package_json_file } from './data.remote';
+	import { get_repo_package_json } from './github.remote';
 
 	let file_name = $state('');
 	let pasted_successfully = $state(false);
 
-	let scan_result = $derived(scan_package_json_file.result);
+	const github_info = $derived.by(() => {
+		const params = Object.fromEntries(page.url.searchParams.entries());
+		if ('repo' in params && 'owner' in params) {
+			return params as { owner: string; repo: string; branch?: string; path?: string };
+		}
+		return null;
+	});
+
+	// the ternary is here so that we will only wait when the query parameters are actually there
+	const github_result = $derived(
+		github_info ? eval_package_json(await get_repo_package_json(github_info)) : null
+	);
+
+	// we prioritize github result over the result of the form submission, this is fine because:
+	// 1. if JS is enabled we simply override the value of the variable with the new scan (which means the UI will update with the new scan result)
+	// 2. if JS is not enabled the form submission will navigate to the remote function URL which will override the github search params
+	let scan_result = $derived(
+		github_result ? (github_result.success ? github_result : null) : scan_package_json_file.result
+	);
 	let scan_error = $derived(
-		scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
+		github_result
+			? github_result.success
+				? ''
+				: github_result.error
+			: scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
 	);
 
 	function package_href(package_name: string) {

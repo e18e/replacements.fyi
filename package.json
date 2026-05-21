@@ -4,9 +4,10 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"clear-build": "rm -rf ./.svelte-kit/cloudflare",
 		"dev": "vite dev",
-		"build": "wrangler types --check && vite build",
-		"preview": "pnpm run build && wrangler dev",
+		"build": "pnpm clear-build && wrangler types --check && vite build",
+		"preview": "wrangler dev",
 		"prepare": "playwright install && svelte-kit sync || echo ''",
 		"check": "wrangler types --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -15,13 +16,14 @@
 		"test:unit": "vitest",
 		"test": "pnpm run test:unit -- --run && pnpm run test:e2e",
 		"test:e2e": "playwright test",
-		"gen": "wrangler types",
+		"gen": "pnpm clear-build && wrangler types",
 		"deploy": "pnpm run build && wrangler deploy"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.4",
 		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.59.1",
+		"@remix-run/route-pattern": "^0.21.1",
 		"@sveltejs/adapter-cloudflare": "^7.2.8",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",

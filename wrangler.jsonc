@@ -12,5 +12,12 @@
 	"preview_urls": true,
 	"observability": {
 		"enabled": true
+	},
+	"env": {
+		"test": {
+			"vars": {
+				"PLAYWRIGHT_TEST": "1"
+			}
+		}
 	}
 }
