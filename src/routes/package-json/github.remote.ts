@@ -49,7 +49,7 @@ async function fetch_package_json(
 async function fetch_default_branch(owner: string, repo: string): Promise<string | null> {
 	const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
 		headers: {
-			"user-agent": "replacements.fyi"
+			'user-agent': 'replacements.fyi'
 		}
 	});
 
