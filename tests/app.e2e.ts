@@ -213,6 +213,151 @@ test.describe('Package JSON scanner', () => {
 
 		await context.close();
 	});
+
+	// the assertions in this tests depends on the mock response defined in /mocks/index.ts
+	// it uses the different number of packages to assert that the path traversal logic is working correctly
+
+	test('scans a package.json without replacements from a GitHub repository URL', async ({
+		page
+	}) => {
+		await page.goto('/github.com/sveltejs/svelte');
+
+		await expect(page).toHaveURL(/package-json\?owner=sveltejs&repo=svelte$/);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: 'No replaceable dependencies found' })
+		).toBeVisible();
+		await expect(
+			page.getByText(
+				'No packages with native replacements or more performant alternatives were found.'
+			)
+		).toBeVisible();
+	});
+
+	test('scans a package.json with replacements from a GitHub repository URL', async ({ page }) => {
+		await page.goto('/github.com/expressjs/express');
+
+		await expect(page).toHaveURL(/package-json\?owner=expressjs&repo=express$/);
+
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByText('Checked 1 packages from package.json')).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+	});
+
+	test('scans a GitHub repository URL that does not use main as its default branch', async ({
+		page
+	}) => {
+		await page.goto('/github.com/preactjs/preact');
+
+		await expect(page).toHaveURL(/package-json\?owner=preactjs&repo=preact$/);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(page.getByText('Checked 1 packages from package.json')).toBeVisible();
+	});
+
+	test('scans a package.json without replacements from a GitHub package URL', async ({ page }) => {
+		await page.goto('/github.com/sveltejs/svelte/tree/main/packages/svelte');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=sveltejs&repo=svelte&branch=main&path=%2Fpackages%2Fsvelte$/
+		);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(page.getByText('Checked 2 packages from package.json')).toBeVisible();
+	});
+
+	test('scans a package.json with replacements from a GitHub package URL', async ({ page }) => {
+		await page.goto('/github.com/expressjs/express/tree/main/packages/router');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=expressjs&repo=express&branch=main&path=%2Fpackages%2Frouter$/
+		);
+
+		await expect(page.getByRole('heading', { name: 'Found 2 replacements' })).toBeVisible();
+		await expect(page.getByText('Checked 2 packages from package.json')).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toHaveCount(0);
+	});
+
+	test('falls back to root package.json without replacements from a GitHub file outside a package folder', async ({
+		page
+	}) => {
+		await page.goto('/github.com/sveltejs/svelte/blob/main/src/index.js');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=sveltejs&repo=svelte&branch=main&path=%2Fsrc$/
+		);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(page.getByText('Checked 1 packages from package.json')).toBeVisible();
+	});
+
+	test('falls back to root package.json with replacements from a GitHub file outside a package folder', async ({
+		page
+	}) => {
+		await page.goto('/github.com/expressjs/express/blob/main/src/index.js');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=expressjs&repo=express&branch=main&path=%2Fsrc$/
+		);
+
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByText('Checked 1 packages from package.json')).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+	});
+
+	test('scans package package.json without replacements from a GitHub file inside a package folder', async ({
+		page
+	}) => {
+		await page.goto('/github.com/sveltejs/svelte/blob/main/packages/svelte/src/index.js');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=sveltejs&repo=svelte&branch=main&path=%2Fpackages%2Fsvelte%2Fsrc$/
+		);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(page.getByText('Checked 4 packages from package.json')).toBeVisible();
+	});
+
+	test('scans package package.json with replacements from a GitHub file inside a package folder', async ({
+		page
+	}) => {
+		await page.goto('/github.com/expressjs/express/blob/main/packages/router/src/index.js');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=expressjs&repo=express&branch=main&path=%2Fpackages%2Frouter%2Fsrc$/
+		);
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await expect(page.getByText('Checked 4 packages from package.json')).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
+	});
+
+	test('shows invalid JSON error when no GitHub package.json is found in the tree', async ({
+		page
+	}) => {
+		await page.goto('/github.com/missing/package-json/blob/main/packages/app/src/index.js');
+
+		await expect(page).toHaveURL(
+			/package-json\?owner=missing&repo=package-json&branch=main&path=%2Fpackages%2Fapp%2Fsrc$/
+		);
+
+		await expect(page.getByRole('alert')).toContainText('File was not valid JSON.');
+	});
 });
 
 test.describe('Runtime switcher', () => {
