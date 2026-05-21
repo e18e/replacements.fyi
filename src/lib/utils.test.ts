@@ -14,7 +14,9 @@ describe('get_github_info', () => {
 	});
 
 	test('parses tree URLs with paths', () => {
-		expect(search_params_to_object(get_github_info('sveltejs/svelte/tree/main/packages/svelte'))).toEqual({
+		expect(
+			search_params_to_object(get_github_info('sveltejs/svelte/tree/main/packages/svelte'))
+		).toEqual({
 			owner: 'sveltejs',
 			repo: 'svelte',
 			branch: 'main',
@@ -24,7 +26,9 @@ describe('get_github_info', () => {
 
 	test('parses blob package.json URLs as their containing folder', () => {
 		expect(
-			search_params_to_object(get_github_info('sveltejs/svelte/blob/main/packages/svelte/package.json'))
+			search_params_to_object(
+				get_github_info('sveltejs/svelte/blob/main/packages/svelte/package.json')
+			)
 		).toEqual({
 			owner: 'sveltejs',
 			repo: 'svelte',
@@ -35,7 +39,9 @@ describe('get_github_info', () => {
 
 	test('parses blob file URLs as their containing folder', () => {
 		expect(
-			search_params_to_object(get_github_info('sveltejs/svelte/blob/main/packages/svelte/src/index.js'))
+			search_params_to_object(
+				get_github_info('sveltejs/svelte/blob/main/packages/svelte/src/index.js')
+			)
 		).toEqual({
 			owner: 'sveltejs',
 			repo: 'svelte',
@@ -45,7 +51,9 @@ describe('get_github_info', () => {
 	});
 
 	test('parses root blob package.json URLs as the repository root', () => {
-		expect(search_params_to_object(get_github_info('sveltejs/svelte/blob/main/package.json'))).toEqual({
+		expect(
+			search_params_to_object(get_github_info('sveltejs/svelte/blob/main/package.json'))
+		).toEqual({
 			owner: 'sveltejs',
 			repo: 'svelte',
 			branch: 'main'
