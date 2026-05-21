@@ -8,6 +8,10 @@ const github_info_schema = v.object({
 	path: v.optional(v.string())
 });
 
+const github_repo_schema = v.object({
+	default_branch: v.string()
+});
+
 function get_package_json_paths(path: string | undefined) {
 	const package_json_paths = [];
 	const trimmed_path = path?.trim().replace(/^\/+|\/+$/g, '');
@@ -42,8 +46,22 @@ async function fetch_package_json(
 	return response.text();
 }
 
+async function fetch_default_branch(owner: string, repo: string): Promise<string | null> {
+	const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+
+	if (!response.ok) return null;
+
+	const result = v.safeParse(github_repo_schema, await response.json());
+	if (!result.success) return null;
+
+	return result.output.default_branch;
+}
+
 export const get_repo_package_json = query(github_info_schema, async (github_info) => {
-	const branch = github_info.branch ?? 'main';
+	const branch =
+		github_info.branch ?? (await fetch_default_branch(github_info.owner, github_info.repo));
+	if (!branch) return '';
+
 	const repo_package_paths = get_package_json_paths(github_info.path);
 
 	for (const repo_package_path of repo_package_paths) {

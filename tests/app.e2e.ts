@@ -247,6 +247,19 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
 	});
 
+	test('scans a GitHub repository URL that does not use main as its default branch', async ({
+		page
+	}) => {
+		await page.goto('/github.com/preactjs/preact');
+
+		await expect(page).toHaveURL(/package-json\?owner=preactjs&repo=preact$/);
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(page.getByText('Checked 1 packages from package.json')).toBeVisible();
+	});
+
 	test('scans a package.json without replacements from a GitHub package URL', async ({ page }) => {
 		await page.goto('/github.com/sveltejs/svelte/tree/main/packages/svelte');
 

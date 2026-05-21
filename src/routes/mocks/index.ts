@@ -4,6 +4,12 @@ export const matcher =
 	createMultiMatcher<(options: Record<string, string | undefined>) => Response>();
 
 const packages: Record<string, Record<string, unknown>> = {
+	'preactjs/preact/package.json': {
+		name: 'preact',
+		dependencies: {
+			'@preact/signals': '^2.0.0'
+		}
+	},
 	'sveltejs/svelte/package.json': {
 		name: 'svelte',
 		dependencies: {
@@ -65,6 +71,19 @@ const packages: Record<string, Record<string, unknown>> = {
 		}
 	}
 };
+
+const repo_default_branches: Record<string, string> = {
+	'preactjs/preact': 'master',
+	'sveltejs/svelte': 'main',
+	'expressjs/express': 'main'
+};
+
+matcher.add('https://api.github.com/repos/:owner/:repo', (params) => {
+	const default_branch = repo_default_branches[`${params.owner}/${params.repo}`];
+	if (default_branch) return Response.json({ default_branch });
+
+	return new Response('Not found', { status: 404 });
+});
 
 matcher.add('https://raw.githubusercontent.com/:owner/:repo/:branch/*path', (params) => {
 	const package_json = packages[`${params.owner}/${params.repo}/${params.path}`];
