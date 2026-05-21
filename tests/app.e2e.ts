@@ -18,6 +18,18 @@ test.describe('Home page', () => {
 		await expect(link).toHaveAttribute('href', /e18e\.dev/);
 	});
 
+	test('has package navigation links', async ({ page }) => {
+		await page.goto('/');
+		await expect(page.getByRole('link', { name: 'Browse all packages →' })).toHaveAttribute(
+			'href',
+			'/packages'
+		);
+		await expect(page.getByRole('link', { name: 'Scan package.json →' })).toHaveAttribute(
+			'href',
+			'/package-json'
+		);
+	});
+
 	test('typing in search shows autocomplete suggestions', async ({ page }) => {
 		await page.goto('/');
 		const input = page.locator('input[name="package"]');
@@ -67,6 +79,139 @@ test.describe('Package detail page', () => {
 		// The back link contains "mr.e18e" text
 		await page.locator('.back-link').click();
 		await expect(page).toHaveURL('/');
+	});
+});
+
+test.describe('Package JSON scanner', () => {
+	async function paste_package_json(page: import('@playwright/test').Page, package_json: unknown) {
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+
+		const paste_dispatched = await page.evaluate((text) => {
+			const data_transfer = new DataTransfer();
+			data_transfer.setData('text/plain', text);
+			const event = new Event('paste', { bubbles: true, cancelable: true });
+			Object.defineProperty(event, 'clipboardData', {
+				value: data_transfer
+			});
+			return window.dispatchEvent(event);
+		}, JSON.stringify(package_json));
+
+		expect(paste_dispatched).toBe(true);
+	}
+
+	test('loads with package.json form', async ({ page }) => {
+		await page.goto('/package-json');
+		await expect(page.locator('input[name="package_json"]')).toBeVisible();
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await expect(page.getByText('Drag a file or')).toBeVisible();
+		await expect(page.getByText('Select Here')).toBeVisible();
+		await expect(page.getByText('Paste the content of your package.json')).toBeVisible();
+	});
+
+	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
+		await page.goto('/package-json');
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1',
+				debug: '^4.4.0',
+				qs: '^6.14.2'
+			}
+		});
+
+		await expect(page.getByText('pasted successfully')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
+	});
+
+	test('shows selected package.json file details after file upload', async ({ page }) => {
+		await page.goto('/package-json');
+		await page.locator('input[name="package_json"]').setInputFiles({
+			name: 'package.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(
+				JSON.stringify({
+					name: 'express',
+					dependencies: {
+						'body-parser': '^2.2.1'
+					}
+				})
+			)
+		});
+
+		await expect(page.locator('input[name="package_json"]')).toHaveValue(/package\.json/);
+		await expect(page.getByText('pasted successfully')).toHaveCount(0);
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+	});
+
+	test('clears previous scan results after navigating away and back', async ({ page }) => {
+		await page.goto('/package-json');
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1',
+				debug: '^4.4.0',
+				qs: '^6.14.2'
+			}
+		});
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await page.goto('/');
+		await page.getByRole('link', { name: 'Scan package.json →' }).click();
+
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toHaveCount(0);
+		await expect(page.getByText('Paste the content of your package.json or')).toBeVisible();
+	});
+
+	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
+		await page.goto('/package-json');
+		await paste_package_json(page, {
+			name: 'clean-package',
+			dependencies: {
+				svelte: '^5.0.0'
+			}
+		});
+
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: 'No replaceable dependencies found' })
+		).toBeVisible();
+		await expect(
+			page.getByText(
+				'No packages with native replacements or more performant alternatives were found.'
+			)
+		).toBeVisible();
+	});
+
+	test('shows a submit button when JavaScript is disabled but only when a file is selected', async ({
+		browser
+	}) => {
+		const context = await browser.newContext({ javaScriptEnabled: false });
+		const page = await context.newPage();
+
+		await page.goto('/package-json');
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).not.toBeVisible();
+
+		await page.locator('input[name="package_json"]').setInputFiles({
+			name: 'package.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(
+				JSON.stringify({
+					name: 'express',
+					dependencies: {
+						'body-parser': '^2.2.1'
+					}
+				})
+			)
+		});
+
+		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+
+		await context.close();
 	});
 });
 

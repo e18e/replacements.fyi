@@ -4,6 +4,7 @@
 	import { all } from 'module-replacements';
 	import Autocomplete from '$lib/Autocomplete.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
 	import { scopify } from '$lib/utils';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
@@ -56,7 +57,7 @@
 				on_select_navigate_to={navigate_to}
 				autofocus
 			/>
-			<button type="submit" class="submit-btn" aria-label="Search">→</button>
+			<SingleInputSubmitButton aria-label="Search" />
 		</form>
 
 		<div class="examples">
@@ -74,6 +75,7 @@
 		>
 
 		<a href={resolve('/packages')} class="all-packages-link">Browse all packages →</a>
+		<a href={resolve('/package-json')} class="all-packages-link">Scan package.json →</a>
 	</div>
 </main>
 
@@ -132,22 +134,6 @@
 
 	.search-form:focus-within {
 		border-color: var(--accent);
-	}
-
-	.submit-btn {
-		background: none;
-		border: none;
-		color: var(--accent);
-		font-family: inherit;
-		font-size: 1.125rem;
-		padding: 0.625rem 0.75rem;
-		cursor: pointer;
-		flex-shrink: 0;
-		line-height: 1;
-	}
-
-	.submit-btn:hover {
-		color: var(--accent-hover);
 	}
 
 	.examples {
