@@ -84,8 +84,6 @@ test.describe('Package detail page', () => {
 
 test.describe('Package JSON scanner', () => {
 	async function paste_package_json(page: import('@playwright/test').Page, package_json: unknown) {
-		await expect(page.getByLabel('Upload package.json')).toBeVisible();
-
 		const paste_dispatched = await page.evaluate((text) => {
 			const data_transfer = new DataTransfer();
 			data_transfer.setData('text/plain', text);
@@ -99,6 +97,34 @@ test.describe('Package JSON scanner', () => {
 		expect(paste_dispatched).toBe(true);
 	}
 
+	async function drop_package_json(page: import('@playwright/test').Page, package_json: unknown) {
+		await page.evaluate((text) => {
+			const file = new File([text], 'package.json', { type: 'application/json' });
+			const data_transfer = new DataTransfer();
+			data_transfer.items.add(file);
+			const event = new DragEvent('drop', {
+				bubbles: true,
+				cancelable: true,
+				dataTransfer: data_transfer
+			});
+			window.dispatchEvent(event);
+		}, JSON.stringify(package_json));
+	}
+
+	async function drag_package_json_over_window(page: import('@playwright/test').Page) {
+		await page.evaluate(() => {
+			const file = new File(['{}'], 'package.json', { type: 'application/json' });
+			const data_transfer = new DataTransfer();
+			data_transfer.items.add(file);
+			const event = new DragEvent('dragenter', {
+				bubbles: true,
+				cancelable: true,
+				dataTransfer: data_transfer
+			});
+			window.dispatchEvent(event);
+		});
+	}
+
 	test('loads with package.json form', async ({ page }) => {
 		await page.goto('/package-json');
 		await expect(page.locator('input[name="package_json"]')).toBeVisible();
@@ -110,6 +136,7 @@ test.describe('Package JSON scanner', () => {
 
 	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
 		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'express',
 			dependencies: {
@@ -119,14 +146,17 @@ test.describe('Package JSON scanner', () => {
 			}
 		});
 
-		await expect(page.getByText('pasted successfully')).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await expect(page.getByLabel('Upload package.json')).toHaveCount(0);
+		await expect(
+			page.getByText('Click here to scan another package.json, or paste/drop one onto this page.')
+		).toBeVisible();
 		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
 		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
-	test('shows selected package.json file details after file upload', async ({ page }) => {
+	test('finds replacements after file upload', async ({ page }) => {
 		await page.goto('/package-json');
 		await page.locator('input[name="package_json"]').setInputFiles({
 			name: 'package.json',
@@ -141,13 +171,72 @@ test.describe('Package JSON scanner', () => {
 			)
 		});
 
-		await expect(page.locator('input[name="package_json"]')).toHaveValue(/package\.json/);
-		await expect(page.getByText('pasted successfully')).toHaveCount(0);
+		await expect(page.locator('input[name="package_json"]')).toHaveCount(0);
 		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+	});
+
+	test('can scan another package.json by clicking, pasting, and dropping again', async ({
+		page
+	}) => {
+		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1'
+			}
+		});
+
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		const scan_again = page.getByRole('link', { name: 'Click here' });
+		await expect(scan_again).toHaveAttribute('href', '/package-json');
+		await scan_again.click();
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toHaveCount(0);
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+
+		await page.locator('input[name="package_json"]').setInputFiles({
+			name: 'package.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(
+				JSON.stringify({
+					name: 'express',
+					dependencies: {
+						debug: '^4.4.0'
+					}
+				})
+			)
+		});
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+
+		await paste_package_json(page, {
+			name: 'clean-package',
+			dependencies: {
+				svelte: '^5.0.0'
+			}
+		});
+		await expect(
+			page.getByRole('heading', { name: '🎉 Your dependencies look good!🎉' })
+		).toBeVisible();
+		await drag_package_json_over_window(page);
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await expect(
+			page.getByText('Click here to scan another package.json, or paste/drop one onto this page.')
+		).toHaveCount(0);
+
+		await drop_package_json(page, {
+			name: 'express',
+			dependencies: {
+				qs: '^6.14.2'
+			}
+		});
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
 	test('clears previous scan results after navigating away and back', async ({ page }) => {
 		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'express',
 			dependencies: {
@@ -167,6 +256,7 @@ test.describe('Package JSON scanner', () => {
 
 	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
 		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'clean-package',
 			dependencies: {

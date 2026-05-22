@@ -3,7 +3,6 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import FileInput from '$lib/FileInput.svelte';
-	import PackageJsonPasteStatus from '$lib/PackageJsonPasteStatus.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import { eval_package_json } from '$lib/package-json-scan';
 	import { scopify } from '$lib/utils';
@@ -12,7 +11,7 @@
 	import { get_repo_package_json } from './github.remote';
 
 	let file_name = $state('');
-	let pasted_successfully = $state(false);
+	let dragging_file = $state(false);
 
 	const github_info = $derived.by(() => {
 		const params = Object.fromEntries(page.url.searchParams.entries());
@@ -50,6 +49,14 @@
 		package_name?.style.setProperty('view-transition-name', 'package-name');
 	}
 
+	function handle_scan_again(event: MouseEvent) {
+		event.preventDefault();
+		scan_result = null;
+		scan_error = '';
+		file_name = '';
+		dragging_file = false;
+	}
+
 	async function handle_file_change(event: Event & { currentTarget: HTMLInputElement }) {
 		const file = event.currentTarget.files?.[0];
 		if (file) {
@@ -59,10 +66,8 @@
 				scan_result = result;
 				scan_error = '';
 				file_name = file.name;
-				pasted_successfully = false;
 			} else {
 				scan_error = result.error;
-				pasted_successfully = false;
 			}
 		}
 	}
@@ -85,12 +90,11 @@
 			if (result.success) {
 				scan_result = result;
 				scan_error = '';
-				pasted_successfully = true;
 				file_name = '';
+				dragging_file = false;
 				return;
 			}
 			scan_error = result.error;
-			pasted_successfully = false;
 		}
 
 		if (file && file?.type === 'application/json') {
@@ -99,23 +103,47 @@
 			if (result.success) {
 				scan_result = result;
 				scan_error = '';
-				pasted_successfully = true;
 				file_name = '';
+				dragging_file = false;
 			} else {
 				scan_error = result.error;
-				pasted_successfully = false;
 			}
 		}
 
 		// TODO: Handle pasted file path
 	}
 
+	function is_dragging_file(event: DragEvent) {
+		return Array.from(event.dataTransfer?.types ?? []).includes('Files');
+	}
+
+	function handle_dragenter(event: DragEvent) {
+		if (is_dragging_file(event)) {
+			dragging_file = true;
+		}
+	}
+
 	function handle_dragover(event: DragEvent) {
 		event.preventDefault();
+		if (is_dragging_file(event)) {
+			dragging_file = true;
+		}
+	}
+
+	function handle_dragleave(event: DragEvent) {
+		if (
+			event.clientX <= 0 ||
+			event.clientY <= 0 ||
+			event.clientX >= innerWidth ||
+			event.clientY >= innerHeight
+		) {
+			dragging_file = false;
+		}
 	}
 
 	async function handle_drop(event: DragEvent) {
 		event.preventDefault();
+		dragging_file = false;
 		const file = event.dataTransfer?.files[0];
 		if (file && file.type === 'application/json') {
 			const text = await file.text();
@@ -124,16 +152,20 @@
 				scan_result = result;
 				scan_error = '';
 				file_name = file.name;
-				pasted_successfully = false;
 			} else {
 				scan_error = result.error;
-				pasted_successfully = false;
 			}
 		}
 	}
 </script>
 
-<svelte:window ondragover={handle_dragover} ondrop={handle_drop} onpaste={handle_paste} />
+<svelte:window
+	ondragenter={handle_dragenter}
+	ondragover={handle_dragover}
+	ondragleave={handle_dragleave}
+	ondrop={handle_drop}
+	onpaste={handle_paste}
+/>
 
 <svelte:head>
 	<title>Scan package.json - replacements.fyi</title>
@@ -149,32 +181,43 @@
 		<p class="count">Scan package.json for replacements</p>
 	</header>
 
-	<PackageJsonPasteStatus pasted={pasted_successfully} />
+	{#if !scan_result || scan_error}
+		<div class="paste-here">
+			<p>Paste the content of your package.json or</p>
+		</div>
+	{/if}
 	<form
 		{...scan_package_json_file.enhance(() => {
 			// prevents the form to submit when JS is available since we handle that on file change
 		})}
 		enctype="multipart/form-data"
 	>
-		<div class="package-json-upload">
-			<FileInput
-				name="package_json"
-				required
-				accept="application/json,.json"
-				placeholder={!file_name}
-				selected={Boolean(file_name)}
-				aria-label="Upload package.json"
-				onchange={handle_file_change}
-			>
-				<span class="file-input-prompt">
-					<span>Drag a file or</span>
-					<span class="file-input-action">Select Here</span>
-				</span>
-			</FileInput>
-		</div>
-		<div class={['scan-submit-row', { browser }]}>
-			<button class="no-js-submit" type="submit">Scan package.json</button>
-		</div>
+		{#if scan_result && !scan_error && !dragging_file}
+			<p class="scan-again-copy">
+				<a href={resolve('/package-json')} onclick={handle_scan_again}>Click here</a> to scan another
+				package.json, or paste/drop one onto this page.
+			</p>
+		{:else}
+			<div class="package-json-upload">
+				<FileInput
+					name="package_json"
+					required
+					accept="application/json,.json"
+					placeholder={!file_name}
+					selected={Boolean(file_name)}
+					aria-label="Upload package.json"
+					onchange={handle_file_change}
+				>
+					<span class="file-input-prompt">
+						<span>Drag a file or</span>
+						<span class="file-input-action">Select Here</span>
+					</span>
+				</FileInput>
+			</div>
+			<div class={['scan-submit-row', { browser }]}>
+				<button class="no-js-submit" type="submit">Scan package.json</button>
+			</div>
+		{/if}
 		{#if scan_error}
 			<p class="error" role="alert">
 				<span class="error-label">// error</span>
@@ -302,12 +345,62 @@
 		margin: 0;
 	}
 
+	.paste-here {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		min-height: 3.5rem;
+		margin: 0 0 1.5rem;
+		color: var(--text);
+		font-size: 0.95rem;
+		line-height: 1.5;
+		p {
+			margin: 0;
+			text-align: center;
+		}
+	}
+
 	.package-json-upload {
 		margin-bottom: 0.45rem;
+		& {
+			min-height: 2.5rem;
+			overflow: hidden;
+			interpolate-size: allow-keywords;
+			--timing: 0.3s;
+			transition:
+				opacity var(--timing),
+				height var(--timing) allow-discrete,
+				display var(--timing) allow-discrete;
+
+			@starting-style {
+				height: 0;
+				opacity: 0;
+			}
+		}
 	}
 
 	.package-json-upload :global(.file-input) {
 		margin-bottom: 0;
+	}
+
+	.scan-again-copy {
+		color: var(--muted);
+		font-size: 0.875rem;
+		line-height: 1.5;
+		margin: 0 0 1.5rem;
+		text-align: center;
+	}
+
+	.scan-again-copy a {
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.scan-again-copy a:hover,
+	.scan-again-copy a:focus-visible {
+		color: var(--accent-hover);
+		text-decoration: underline;
 	}
 
 	.scan-submit-row {
