@@ -198,7 +198,7 @@
 				package.json, or paste/drop one onto this page.
 			</p>
 		{:else}
-			<div class={['package-json-upload', { dragging: dragging_file }]}>
+			<div class="package-json-upload">
 				<FileInput
 					name="package_json"
 					required
@@ -363,7 +363,7 @@
 
 	.package-json-upload {
 		margin-bottom: 0.45rem;
-		&.dragging {
+		& {
 			min-height: 2.5rem;
 			overflow: hidden;
 			interpolate-size: allow-keywords;
