@@ -242,8 +242,8 @@
 
 			{#if scan_result.replacements.length > 0}
 				<ul class="replacement-list">
-					{#each scan_result.replacements as replacement (replacement.dep)}
-						<li>
+					{#each scan_result.replacements as replacement, i (replacement.dep)}
+						<li style:--i={i}>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								onclick={(e) => {
@@ -512,33 +512,6 @@
 	.replacement-list li {
 		animation: item-in 0.3s ease-out both;
 		animation-delay: calc(0.15s + var(--i, 0) * 0.04s);
-	}
-	.replacement-list li:nth-child(1) {
-		--i: 0;
-	}
-	.replacement-list li:nth-child(2) {
-		--i: 1;
-	}
-	.replacement-list li:nth-child(3) {
-		--i: 2;
-	}
-	.replacement-list li:nth-child(4) {
-		--i: 3;
-	}
-	.replacement-list li:nth-child(5) {
-		--i: 4;
-	}
-	.replacement-list li:nth-child(6) {
-		--i: 5;
-	}
-	.replacement-list li:nth-child(7) {
-		--i: 6;
-	}
-	.replacement-list li:nth-child(8) {
-		--i: 7;
-	}
-	.replacement-list li:nth-child(n + 9) {
-		--i: 8;
 	}
 
 	.empty-state {
