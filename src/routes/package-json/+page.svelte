@@ -242,8 +242,8 @@
 
 			{#if scan_result.replacements.length > 0}
 				<ul class="replacement-list">
-					{#each scan_result.replacements as replacement (replacement.dep)}
-						<li>
+					{#each scan_result.replacements as replacement, i (replacement.dep)}
+						<li style:--i={i}>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								onclick={(e) => {
@@ -471,10 +471,33 @@
 
 	.results {
 		margin-top: 2rem;
+		animation: results-in 0.35s ease-out both;
 	}
 
 	.results-header {
 		margin-bottom: 1rem;
+	}
+
+	@keyframes results-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+
+	@keyframes item-in {
+		from {
+			opacity: 0;
+			transform: translateY(6px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.results,
+		.replacement-list li,
+		.empty-state {
+			animation: none;
+		}
 	}
 
 	.replacement-list {
@@ -484,6 +507,15 @@
 		border: 1px solid var(--border);
 		border-radius: 6px;
 		overflow: hidden;
+	}
+
+	.replacement-list li {
+		animation: item-in 0.3s ease-out both;
+		animation-delay: calc(0.15s + var(--i, 0) * 0.04s);
+	}
+
+	.empty-state {
+		animation: item-in 0.35s ease-out 0.15s both;
 	}
 
 	.replacement-link {
