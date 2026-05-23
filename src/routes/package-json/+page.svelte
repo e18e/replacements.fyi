@@ -471,10 +471,33 @@
 
 	.results {
 		margin-top: 2rem;
+		animation: results-in 0.35s ease-out both;
 	}
 
 	.results-header {
 		margin-bottom: 1rem;
+	}
+
+	@keyframes results-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+
+	@keyframes item-in {
+		from {
+			opacity: 0;
+			transform: translateY(6px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.results,
+		.replacement-list li,
+		.empty-state {
+			animation: none;
+		}
 	}
 
 	.replacement-list {
@@ -484,6 +507,42 @@
 		border: 1px solid var(--border);
 		border-radius: 6px;
 		overflow: hidden;
+	}
+
+	.replacement-list li {
+		animation: item-in 0.3s ease-out both;
+		animation-delay: calc(0.15s + var(--i, 0) * 0.04s);
+	}
+	.replacement-list li:nth-child(1) {
+		--i: 0;
+	}
+	.replacement-list li:nth-child(2) {
+		--i: 1;
+	}
+	.replacement-list li:nth-child(3) {
+		--i: 2;
+	}
+	.replacement-list li:nth-child(4) {
+		--i: 3;
+	}
+	.replacement-list li:nth-child(5) {
+		--i: 4;
+	}
+	.replacement-list li:nth-child(6) {
+		--i: 5;
+	}
+	.replacement-list li:nth-child(7) {
+		--i: 6;
+	}
+	.replacement-list li:nth-child(8) {
+		--i: 7;
+	}
+	.replacement-list li:nth-child(n + 9) {
+		--i: 8;
+	}
+
+	.empty-state {
+		animation: item-in 0.35s ease-out 0.15s both;
 	}
 
 	.replacement-link {
