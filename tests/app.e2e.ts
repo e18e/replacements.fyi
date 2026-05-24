@@ -74,6 +74,20 @@ test.describe('Package detail page', () => {
 		);
 	});
 
+	test('known package name without a known replacement shows not found for unscoped package', async ({
+		page
+	}) => {
+		await page.goto('/eslint');
+		await expect(page.getByRole('heading')).toHaveText('"eslint" not found');
+	});
+
+	test('known package name without a known replacement shows not found for scoped package', async ({
+		page
+	}) => {
+		await page.goto('/@eslint/eslint');
+		await expect(page.getByRole('heading')).toHaveText('"@eslint/eslint" not found');
+	});
+
 	test('back link navigates home', async ({ page }) => {
 		await page.goto('/is-number');
 		// The back link contains "mr.e18e" text

@@ -18,12 +18,10 @@
 
 	let package_name = $derived(`${params.scope ? `${params.scope}/` : ''}${params.package}`);
 
-	let mapping = $derived(
-		Object.hasOwn(all.mappings, package_name) ? all.mappings[package_name] : undefined
-	);
+	let mapping = $derived(all.mappings[package_name]);
 
 	let resolved_replacements = $derived(
-		mapping ? mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] })) : []
+		mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] }))
 	);
 
 	let visible_replacements = $derived(
@@ -79,34 +77,13 @@
 </script>
 
 <svelte:head>
-	{#if mapping}
-		<title>{package_name} - replacements.fyi</title>
-		<meta name="description" content="Replacements for the '{package_name}' npm package." />
-	{:else}
-		<title>{package_name} not found - replacements.fyi</title>
-		<meta name="description" content="No replacement found for the '{package_name}' npm package." />
-	{/if}
+	<title>{package_name} - replacements.fyi</title>
+	<meta name="description" content="Replacements for the '{package_name}' npm package." />
 </svelte:head>
 
 <a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 <main class="page">
-	{#if !mapping}
-		<div class="not-found">
-			<header>
-				<p class="comment">// 404</p>
-				<h1>"<span class="pkg">{package_name}</span>" not found</h1>
-			</header>
-			<p>we don't have a replacement for "{package_name}"...yet</p>
-			<p>
-				if you have a suggestion, please <a
-					href="https://github.com/e18e/module-replacements/issues/new?template=1-replacement.yml"
-					target="_blank"
-					rel="noopener noreferrer">let us know</a
-				>
-			</p>
-		</div>
-	{:else}
-		<header class="pkg-header">
+	<header class="pkg-header">
 			<p class="comment">// package</p>
 			<h1 class="pkg-name"><span class="pkg">{package_name}</span></h1>
 			<p class="pkg-type">type: "{mapping.type}"</p>
@@ -212,7 +189,6 @@
 				</div>
 			{/each}
 		</section>
-	{/if}
 </main>
 
 <style>
@@ -436,15 +412,4 @@
 		display: none;
 	}
 
-	/* Not found */
-	.not-found {
-		padding-top: 3rem;
-	}
-
-	.not-found h1 {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: var(--text);
-		margin: 0.25rem 0 1.5rem;
-	}
 </style>
