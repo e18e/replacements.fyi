@@ -58,6 +58,30 @@ test.describe('Home page', () => {
 		await page.getByRole('button', { name: 'Search' }).click();
 		await expect(page).toHaveURL(/\/is-number/);
 	});
+
+	test('dropping package.json navigates to its scan results', async ({ page }) => {
+		await page.goto('/');
+		await page.evaluate(() => {
+			const file = new File(
+				[JSON.stringify({ dependencies: { 'body-parser': '^2.2.1' } })],
+				'package.json',
+				{ type: 'application/json' }
+			);
+			const data_transfer = new DataTransfer();
+			data_transfer.items.add(file);
+			window.dispatchEvent(
+				new DragEvent('drop', {
+					bubbles: true,
+					cancelable: true,
+					dataTransfer: data_transfer
+				})
+			);
+		});
+
+		await expect(page).toHaveURL(/\/package-json$/);
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+	});
 });
 
 test.describe('Package detail page', () => {
