@@ -5,6 +5,7 @@
 	import FileInput from '$lib/FileInput.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import { eval_package_json } from '$lib/package-json-scan';
+	import type { PackageJsonScanResult } from '$lib/package-json-scan';
 	import { scopify } from '$lib/utils';
 
 	import { scan_package_json_file } from './data.remote';
@@ -21,9 +22,27 @@
 		return null;
 	});
 
+	function eval_github_package_json(package_json: string | null): PackageJsonScanResult {
+		if (package_json === null) {
+			return { success: false, error: 'package.json not found in this GitHub repository.' };
+		}
+
+		const result = eval_package_json(package_json);
+		// note (ux): A GitHub scan resolves a repository file, rather than an uploaded file.
+		// Use source-specific copy so users know the link resolved but its package.json is malformed.
+		if (!result.success && result.error === 'File was not valid JSON.') {
+			return {
+				success: false,
+				error: 'package.json found in this GitHub repository was not valid JSON.'
+			};
+		}
+
+		return result;
+	}
+
 	// the ternary is here so that we will only wait when the query parameters are actually there
 	const github_result = $derived(
-		github_info ? eval_package_json(await get_repo_package_json(github_info)) : null
+		github_info ? eval_github_package_json(await get_repo_package_json(github_info)) : null
 	);
 
 	// we prioritize github result over the result of the form submission, this is fine because:

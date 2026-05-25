@@ -64,7 +64,7 @@ async function fetch_default_branch(owner: string, repo: string): Promise<string
 export const get_repo_package_json = query(github_info_schema, async (github_info) => {
 	const branch =
 		github_info.branch ?? (await fetch_default_branch(github_info.owner, github_info.repo));
-	if (!branch) return '';
+	if (!branch) return null;
 
 	const repo_package_paths = get_package_json_paths(github_info.path);
 
@@ -79,6 +79,6 @@ export const get_repo_package_json = query(github_info_schema, async (github_inf
 
 		if (package_json) return package_json;
 	}
-	// if no package.json is found we return an empty string so the client shows the not valid JSON UI
-	return '';
+
+	return null;
 });
