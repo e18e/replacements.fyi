@@ -17,8 +17,13 @@
 	let { params } = $props();
 
 	let package_name = $derived(`${params.scope ? `${params.scope}/` : ''}${params.package}`);
+	type Mapping = (typeof all.mappings)[keyof typeof all.mappings];
 
-	let mapping = $derived(all.mappings[package_name]);
+	let mapping = $derived(
+		Object.hasOwn(all.mappings, package_name)
+			? (all.mappings[package_name] as Mapping)
+			: undefined
+	);
 
 	let resolved_replacements = $derived(
 		mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] }))
