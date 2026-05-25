@@ -57,7 +57,8 @@
 
 <style>
 	.page {
-		min-height: 100vh;
+		flex: 1;
+		width: 100%;
 		color: var(--text);
 		max-width: 700px;
 		margin: 0 auto;

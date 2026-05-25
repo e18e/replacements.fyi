@@ -81,17 +81,20 @@
 
 <style>
 	.page {
-		min-height: 100vh;
+		flex: 1;
+		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
+		max-width: 700px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.container {
 		max-width: 480px;
 		width: 100%;
-		transform: translateY(-2rem);
 		container-type: inline-size;
 	}
 

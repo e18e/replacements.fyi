@@ -25,6 +25,26 @@
 	/>
 </svelte:head>
 
-<Controls />
+<div class="app">
+	<Controls />
+	<div class="page-wrapper">
+		{@render children()}
+	</div>
+</div>
 
-{@render children()}
+<style>
+	.app {
+		height: 100dvh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.page-wrapper {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		overflow: auto;
+		min-height: 0;
+	}
+</style>
