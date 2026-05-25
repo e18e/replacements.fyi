@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import FileInput from '$lib/FileInput.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import { eval_package_json } from '$lib/package-json-scan';
 	import type { PackageJsonScanResult } from '$lib/package-json-scan';
+	import { decode_param, encode_deps } from '$lib/package-json-url';
 	import { scopify } from '$lib/utils';
 
 	import { scan_package_json_file } from './data.remote';
@@ -45,18 +47,41 @@
 		github_info ? eval_github_package_json(await get_repo_package_json(github_info)) : null
 	);
 
-	// we prioritize github result over the result of the form submission, this is fine because:
+	const config_param = $derived(page.url.searchParams.get('config'));
+
+	const config_result = $derived.by((): PackageJsonScanResult | null => {
+		if (!config_param) return null;
+		const decoded = decode_param(config_param);
+		if (decoded === null) {
+			return { success: false, error: 'Configuration in URL was invalid.' };
+		}
+		return eval_package_json(decoded);
+	});
+
+	// we prioritize github result over config result over the result of the form submission, this is fine because:
 	// 1. if JS is enabled we simply override the value of the variable with the new scan (which means the UI will update with the new scan result)
-	// 2. if JS is not enabled the form submission will navigate to the remote function URL which will override the github search params
+	// 2. if JS is not enabled the form submission will navigate to the remote function URL which will override the github or config search params
 	let scan_result = $derived(
-		github_result ? (github_result.success ? github_result : null) : scan_package_json_file.result
+		github_result
+			? github_result.success
+				? github_result
+				: null
+			: config_result
+				? config_result.success
+					? config_result
+					: null
+				: scan_package_json_file.result
 	);
 	let scan_error = $derived(
 		github_result
 			? github_result.success
 				? ''
 				: github_result.error
-			: scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
+			: config_result
+				? config_result.success
+					? ''
+					: config_result.error
+				: scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
 	);
 
 	function package_href(package_name: string) {
@@ -68,12 +93,21 @@
 		package_name?.style.setProperty('view-transition-name', 'package-name');
 	}
 
-	function handle_scan_again(event: MouseEvent) {
-		event.preventDefault();
+	function handle_scan_again() {
 		scan_result = null;
 		scan_error = '';
 		file_name = '';
 		dragging_file = false;
+	}
+
+	async function push_config_to_url(package_json_text: string) {
+		const parsed: {
+			dependencies?: Record<string, unknown>;
+			devDependencies?: Record<string, unknown>;
+		} = JSON.parse(package_json_text);
+		const encoded = encode_deps(parsed.dependencies, parsed.devDependencies);
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		await goto(`${resolve('/package-json')}?config=${encoded}`);
 	}
 
 	async function handle_file_change(event: Event & { currentTarget: HTMLInputElement }) {
@@ -85,6 +119,7 @@
 				scan_result = result;
 				scan_error = '';
 				file_name = file.name;
+				await push_config_to_url(text);
 			} else {
 				scan_error = result.error;
 			}
@@ -111,6 +146,7 @@
 				scan_error = '';
 				file_name = '';
 				dragging_file = false;
+				await push_config_to_url(package_json);
 				return;
 			}
 			scan_error = result.error;
@@ -124,6 +160,7 @@
 				scan_error = '';
 				file_name = '';
 				dragging_file = false;
+				await push_config_to_url(text);
 			} else {
 				scan_error = result.error;
 			}
@@ -171,6 +208,7 @@
 				scan_result = result;
 				scan_error = '';
 				file_name = file.name;
+				await push_config_to_url(text);
 			} else {
 				scan_error = result.error;
 			}
