@@ -234,6 +234,62 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
+	test('preserves a dropped package.json in the URL and restores it via the back button', async ({
+		page
+	}) => {
+		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await expect(page).toHaveURL(/\/package-json$/);
+
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: {
+				'body-parser': '^2.2.1',
+				debug: '^4.4.0',
+				qs: '^6.14.2'
+			}
+		});
+
+		await expect(page).toHaveURL(/\/package-json\?config=[^&]+$/);
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+
+		await page.getByRole('link', { name: /body-parser/ }).click();
+		await expect(page).toHaveURL(/\/body-parser$/);
+
+		await page.goBack();
+		await expect(page).toHaveURL(/\/package-json\?config=[^&]+$/);
+		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /debug/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
+		await expect(page.getByLabel('Upload package.json')).toHaveCount(0);
+	});
+
+	test('renders results directly from a ?config= URL without an upload', async ({ page }) => {
+		await page.goto('/package-json');
+		await expect(page.getByLabel('Upload package.json')).toBeVisible();
+		await paste_package_json(page, {
+			name: 'express',
+			dependencies: { 'body-parser': '^2.2.1' }
+		});
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page).toHaveURL(/\/package-json\?config=[^&]+$/);
+		const shareable_url = page.url();
+
+		await page.goto('/');
+		await page.goto(shareable_url);
+
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
+		await expect(page.getByLabel('Upload package.json')).toHaveCount(0);
+	});
+
+	test('shows an error when the ?config= URL parameter is corrupt', async ({ page }) => {
+		await page.goto('/package-json?config=not-a-real-lz-string-payload');
+
+		await expect(page.getByRole('alert')).toContainText('Configuration in URL was invalid.');
+	});
+
 	test('clears previous scan results after navigating away and back', async ({ page }) => {
 		await page.goto('/package-json');
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
