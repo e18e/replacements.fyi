@@ -18,11 +18,15 @@
 	let { params } = $props();
 
 	let package_name = $derived(params.pkg);
-	type Mapping = (typeof all.mappings)[keyof typeof all.mappings];
 
 	let mapping = $derived.by(() => {
-		if (Object.hasOwn(all.mappings, package_name)) return all.mappings[package_name] as Mapping;
-		error(404, `"${package_name}" not found`);
+		const mapping = all.mappings[package_name];
+		// this should technically never happen since we guard with the
+		// param matched but just to be safe in case we remove the param matcher
+		if (!mapping) {
+			error(404, `Not found`);
+		}
+		return mapping;
 	});
 
 	let resolved_replacements = $derived(
