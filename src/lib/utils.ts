@@ -1,7 +1,3 @@
-export function scopify(pkg: string) {
-	return { pkg };
-}
-
 export const github_regex =
 	/(?<owner>[^/]+)\/(?<repo>[^/]+)\/?(?:(?<type>tree|blob)\/(?<branch>[^/]+))?(?<path>\/.*)?/;
 

@@ -5,13 +5,12 @@
 	import Autocomplete from '$lib/Autocomplete.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
-	import { scopify } from '$lib/utils';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 	const packages = Object.keys(all.mappings);
 
 	function package_href(package_name: string) {
-		return resolve('/[...pkg=package_name]', scopify(package_name));
+		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
 
 	function navigate_to(package_name: string) {
