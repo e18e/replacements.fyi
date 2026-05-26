@@ -86,6 +86,10 @@ matcher.add('https://api.github.com/repos/:owner/:repo', (params) => {
 });
 
 matcher.add('https://raw.githubusercontent.com/:owner/:repo/:branch/*path', (params) => {
+	if (`${params.owner}/${params.repo}/${params.path}` === 'invalid/package-json/package.json') {
+		return new Response('{ "dependencies": {');
+	}
+
 	const package_json = packages[`${params.owner}/${params.repo}/${params.path}`];
 	if (package_json) return new Response(JSON.stringify(package_json));
 

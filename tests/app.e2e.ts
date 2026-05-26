@@ -451,7 +451,7 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('link', { name: /qs/ })).toBeVisible();
 	});
 
-	test('shows invalid JSON error when no GitHub package.json is found in the tree', async ({
+	test('shows not found error when no GitHub package.json is found in the tree', async ({
 		page
 	}) => {
 		await page.goto('/github.com/missing/package-json/blob/main/packages/app/src/index.js');
@@ -460,7 +460,17 @@ test.describe('Package JSON scanner', () => {
 			/package-json\?owner=missing&repo=package-json&branch=main&path=%2Fpackages%2Fapp%2Fsrc$/
 		);
 
-		await expect(page.getByRole('alert')).toContainText('File was not valid JSON.');
+		await expect(page.getByRole('alert')).toContainText(
+			'package.json not found in this GitHub repository.'
+		);
+	});
+
+	test('shows invalid JSON error for a malformed GitHub package.json', async ({ page }) => {
+		await page.goto('/package-json?owner=invalid&repo=package-json&branch=main');
+
+		await expect(page.getByRole('alert')).toContainText(
+			'package.json found in this GitHub repository was not valid JSON.'
+		);
 	});
 });
 
