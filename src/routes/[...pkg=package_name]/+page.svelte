@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { error } from '@sveltejs/kit';
 	import {
 		all,
 		resolveDocUrl,
@@ -21,7 +22,7 @@
 
 	let mapping = $derived.by(() => {
 		if (Object.hasOwn(all.mappings, package_name)) return all.mappings[package_name] as Mapping;
-		throw new Error(`Missing mapping for ${package_name}`);
+		error(404, `"${package_name}" not found`);
 	});
 
 	let resolved_replacements = $derived(
@@ -88,111 +89,110 @@
 <a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 <main class="page">
 	<header class="pkg-header">
-			<p class="comment">// package</p>
-			<h1 class="pkg-name"><span class="pkg">{package_name}</span></h1>
-			<p class="pkg-type">type: "{mapping.type}"</p>
-		</header>
+		<p class="comment">// package</p>
+		<h1 class="pkg-name"><span class="pkg">{package_name}</span></h1>
+		<p class="pkg-type">type: "{mapping.type}"</p>
+	</header>
 
-		<section class="preferences">
-			<p class="comment">// preferences</p>
-			<div class="prefs-list">
-				<RuntimeToggle />
-			</div>
-		</section>
+	<section class="preferences">
+		<p class="comment">// preferences</p>
+		<div class="prefs-list">
+			<RuntimeToggle />
+		</div>
+	</section>
 
-		<section class="replacements">
-			<p class="comment">// replacements ({count_label})</p>
+	<section class="replacements">
+		<p class="comment">// replacements ({count_label})</p>
 
-			{#if visible_replacements.length === 0}
-				<p class="description">
-					No replacements match the <span class="teal">{runtime.pref}</span> runtime. Try switching
-					to <span class="teal">any</span>.
-				</p>
-			{/if}
+		{#if visible_replacements.length === 0}
+			<p class="description">
+				No replacements match the <span class="teal">{runtime.pref}</span> runtime. Try switching to
+				<span class="teal">any</span>.
+			</p>
+		{/if}
 
-			{#each visible_replacements as { key, data } (key)}
-				<div class="replacement">
-					<h2 class="replacement-id">{key}</h2>
-					<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
+		{#each visible_replacements as { key, data } (key)}
+			<div class="replacement">
+				<h2 class="replacement-id">{key}</h2>
+				<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
 
-					{#if data.type === 'native'}
-						<p class="description">
-							This feature is available natively by using <span class="teal">{key}</span>. No
-							third-party package needed.
+				{#if data.type === 'native'}
+					<p class="description">
+						This feature is available natively by using <span class="teal">{key}</span>. No
+						third-party package needed.
+					</p>
+					{#if data.url}
+						<p class="doc-link">
+							→ docs:
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+							<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
+								>{get_url_display_name(data.url)}</a
+							>
 						</p>
-						{#if data.url}
-							<p class="doc-link">
-								→ docs:
-								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
-									>{get_url_display_name(data.url)}</a
-								>
-							</p>
-						{/if}
-						{#if data.engines && data.engines.length > 0}
-							<p class="comment">// engine support</p>
-							{@const categories = categorized_engines(data.engines)}
-							<div class="engine-tabs" style:--tab-count={categories.length}>
-								{#each categories as cat, i (cat.label)}
-									<details name="engine-category-{key}" class="engine-tab" open={i === 0}>
-										<summary class="tab-btn" style:--n={i + 1}>{cat.label}</summary>
-										<table class="engine-table">
-											<thead>
-												<tr>
-													<th>engine</th>
-													<th>min version</th>
-												</tr>
-											</thead>
-											<tbody>
-												{#each cat.engines as eng (eng.engine)}
-													<tr>
-														<td>{eng.engine}</td>
-														<td>{eng.minVersion ?? '?'}</td>
-													</tr>
-												{/each}
-											</tbody>
-										</table>
-									</details>
-								{/each}
-							</div>
-						{/if}
-					{:else if data.type === 'simple'}
-						<p class="description">This package is no longer necessary. {data.description}</p>
-						{#if data.example}
-							<p class="comment">// example</p>
-							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-							{@html await highlight(data.example)}
-						{/if}
-					{:else if data.type === 'removal'}
-						<p class="description">This package is no longer necessary. {data.description}</p>
-						<p class="verdict">// verdict: just remove it</p>
-					{:else if data.type === 'documented'}
-						<p class="description">
-							This package provides equivalent functionality and has been flagged as more
-							performant.
-						</p>
-						{#if data.url}
-							<p class="doc-link">
-								→ docs:
-								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
-									>{get_url_display_name(data.url)}</a
-								>
-							</p>
-						{/if}
-						{#if data.replacementModule}
-							<p class="doc-link">
-								→ npmx:
-								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={resolve_npm_url(data.replacementModule)} target="_blank" rel="noopener"
-									>{key}</a
-								>
-							</p>
-						{/if}
 					{/if}
-				</div>
-			{/each}
-		</section>
+					{#if data.engines && data.engines.length > 0}
+						<p class="comment">// engine support</p>
+						{@const categories = categorized_engines(data.engines)}
+						<div class="engine-tabs" style:--tab-count={categories.length}>
+							{#each categories as cat, i (cat.label)}
+								<details name="engine-category-{key}" class="engine-tab" open={i === 0}>
+									<summary class="tab-btn" style:--n={i + 1}>{cat.label}</summary>
+									<table class="engine-table">
+										<thead>
+											<tr>
+												<th>engine</th>
+												<th>min version</th>
+											</tr>
+										</thead>
+										<tbody>
+											{#each cat.engines as eng (eng.engine)}
+												<tr>
+													<td>{eng.engine}</td>
+													<td>{eng.minVersion ?? '?'}</td>
+												</tr>
+											{/each}
+										</tbody>
+									</table>
+								</details>
+							{/each}
+						</div>
+					{/if}
+				{:else if data.type === 'simple'}
+					<p class="description">This package is no longer necessary. {data.description}</p>
+					{#if data.example}
+						<p class="comment">// example</p>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html await highlight(data.example)}
+					{/if}
+				{:else if data.type === 'removal'}
+					<p class="description">This package is no longer necessary. {data.description}</p>
+					<p class="verdict">// verdict: just remove it</p>
+				{:else if data.type === 'documented'}
+					<p class="description">
+						This package provides equivalent functionality and has been flagged as more performant.
+					</p>
+					{#if data.url}
+						<p class="doc-link">
+							→ docs:
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+							<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
+								>{get_url_display_name(data.url)}</a
+							>
+						</p>
+					{/if}
+					{#if data.replacementModule}
+						<p class="doc-link">
+							→ npmx:
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+							<a href={resolve_npm_url(data.replacementModule)} target="_blank" rel="noopener"
+								>{key}</a
+							>
+						</p>
+					{/if}
+				{/if}
+			</div>
+		{/each}
+	</section>
 </main>
 
 <style>
@@ -415,5 +415,4 @@
 	.tab-btn::-webkit-details-marker {
 		display: none;
 	}
-
 </style>
