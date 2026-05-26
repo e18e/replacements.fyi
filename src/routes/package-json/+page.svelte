@@ -41,7 +41,7 @@
 	);
 
 	function package_href(package_name: string) {
-		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
+		return resolve('/[...pkg=package_name]', scopify(package_name));
 	}
 
 	function add_view_transition_name(link: HTMLAnchorElement) {

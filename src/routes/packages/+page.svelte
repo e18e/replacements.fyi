@@ -41,7 +41,7 @@
 					onclick={(e) => {
 						e.currentTarget.style.setProperty('view-transition-name', 'package-name');
 					}}
-					href={resolve('/[[scope=scope]]/[package]', scopify(pkg))}
+					href={resolve('/[...pkg=package_name]', scopify(pkg))}
 					class="package-link"
 				>
 					<span class="package-name">{pkg}</span>

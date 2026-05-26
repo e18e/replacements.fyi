@@ -16,14 +16,13 @@
 
 	let { params } = $props();
 
-	let package_name = $derived(`${params.scope ? `${params.scope}/` : ''}${params.package}`);
+	let package_name = $derived(params.pkg);
 	type Mapping = (typeof all.mappings)[keyof typeof all.mappings];
 
-	let mapping = $derived(
-		Object.hasOwn(all.mappings, package_name)
-			? (all.mappings[package_name] as Mapping)
-			: undefined
-	);
+	let mapping = $derived.by(() => {
+		if (Object.hasOwn(all.mappings, package_name)) return all.mappings[package_name] as Mapping;
+		throw new Error(`Missing mapping for ${package_name}`);
+	});
 
 	let resolved_replacements = $derived(
 		mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] }))

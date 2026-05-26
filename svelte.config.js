@@ -14,6 +14,7 @@ const config = {
 		prerender: {
 			origin: 'https://replacements.fyi',
 			entries: [
+				'/',
 				'/llms.txt',
 				...Object.keys(all.mappings).flatMap((key) => [`/${key}`, `/${key}.json`])
 			]

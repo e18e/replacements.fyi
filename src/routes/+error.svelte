@@ -4,7 +4,11 @@
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 
 	const error_message = $derived(page.error?.message ?? 'An error occurred');
-	const package_name = $derived(page.error?.package_name);
+	const package_name = $derived.by(() => {
+		if (page.status !== 404) return undefined;
+		const pathname = decodeURIComponent(page.url.pathname).replace(/^\/+|\/+$/g, '');
+		return pathname.replace(/\.json$/, '') || undefined;
+	});
 </script>
 
 <svelte:head>
