@@ -6,7 +6,6 @@
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 	import { eval_package_json } from '$lib/package-json-scan';
 	import type { PackageJsonScanResult } from '$lib/package-json-scan';
-	import { scopify } from '$lib/utils';
 
 	import { scan_package_json_file } from './data.remote';
 	import { get_repo_package_json } from './github.remote';
@@ -60,7 +59,7 @@
 	);
 
 	function package_href(package_name: string) {
-		return resolve('/[[scope=scope]]/[package]', scopify(package_name));
+		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
 
 	function add_view_transition_name(link: HTMLAnchorElement) {

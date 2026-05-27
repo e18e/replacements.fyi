@@ -3,7 +3,6 @@
 	import { all } from 'module-replacements';
 	import FilterInput from '$lib/FilterInput.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
-	import { scopify } from '$lib/utils';
 
 	const packages = Object.keys(all.mappings).sort();
 
@@ -41,7 +40,7 @@
 					onclick={(e) => {
 						e.currentTarget.style.setProperty('view-transition-name', 'package-name');
 					}}
-					href={resolve('/[[scope=scope]]/[package]', scopify(pkg))}
+					href={resolve('/[...pkg=package_name]', { pkg })}
 					class="package-link"
 				>
 					<span class="package-name">{pkg}</span>

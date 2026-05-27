@@ -69,9 +69,23 @@ test.describe('Package detail page', () => {
 
 	test('unknown package shows not found message', async ({ page }) => {
 		await page.goto('/this-package-does-not-exist-xyz');
-		await expect(page.getByRole('heading')).toHaveText(
-			'"this-package-does-not-exist-xyz" not found'
+		await expect(page.getByText("we don't have a replacement")).toContainText(
+			'"this-package-does-not-exist-xyz"'
 		);
+	});
+
+	test('known package name without a known replacement shows not found for unscoped package', async ({
+		page
+	}) => {
+		await page.goto('/eslint');
+		await expect(page.getByText("we don't have a replacement")).toContainText('"eslint"');
+	});
+
+	test('known package name without a known replacement shows not found for scoped package', async ({
+		page
+	}) => {
+		await page.goto('/@eslint/eslint');
+		await expect(page.getByText("we don't have a replacement")).toContainText('"@eslint/eslint"');
 	});
 
 	test('back link navigates home', async ({ page }) => {
