@@ -58,6 +58,18 @@
 			: scan_package_json_file.fields.package_json.issues()?.[0]?.message || ''
 	);
 
+	$effect(() => {
+		if (page.state.package_json) {
+			const result = eval_package_json(page.state.package_json);
+			if (result.success) {
+				scan_result = result;
+				scan_error = '';
+			} else {
+				scan_error = result.error;
+			}
+		}
+	});
+
 	function package_href(package_name: string) {
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
