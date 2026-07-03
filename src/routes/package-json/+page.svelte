@@ -258,10 +258,7 @@
 					{#each scan_result.replacements as replacement, i (replacement.dep)}
 						<li style:--i={i}>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
-							<a
-								href={package_href(replacement.replacement.moduleName)}
-								class="replacement-link"
-							>
+							<a href={package_href(replacement.replacement.moduleName)} class="replacement-link">
 								<span class="replacement-copy">
 									<span class="package-name">{replacement.dep}</span>
 									<span class="replacement-target"

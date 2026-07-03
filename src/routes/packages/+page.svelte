@@ -36,10 +36,7 @@
 	<ul class="package-list">
 		{#each filtered_packages as pkg (pkg)}
 			<li>
-				<a
-					href={resolve('/[...pkg=package_name]', { pkg })}
-					class="package-link"
-				>
+				<a href={resolve('/[...pkg=package_name]', { pkg })} class="package-link">
 					<span class="package-name">{pkg}</span>
 				</a>
 			</li>
