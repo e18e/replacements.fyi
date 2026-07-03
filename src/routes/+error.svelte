@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import { page } from '$app/state';
+	import PackageSearch from '$lib/PackageSearch.svelte';
 
 	const error_message = $derived(page.error?.message ?? 'An error occurred');
 	const package_name = $derived.by(() => {
@@ -15,7 +15,7 @@
 	<title>{page.status} - replacements.fyi</title>
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
+<PackageSearch value={package_name ?? ''} />
 
 <main class="page">
 	<header>
@@ -50,17 +50,6 @@
 
 	a {
 		text-decoration: none;
-	}
-
-	.back-link {
-		color: var(--accent);
-		font-size: 1rem;
-		display: inline-block;
-		margin: 1.5rem;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
 	}
 
 	.comment {

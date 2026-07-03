@@ -1,11 +1,20 @@
-@view-transition {
-	navigation: auto;
+/* npmx-inspired search-box morph: disable root crossfade, animate search-box only. */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
 }
 
-::view-transition-old(package-name),
-::view-transition-new(package-name) {
-	height: 100%;
-	width: auto;
+::view-transition-old(search-box),
+::view-transition-new(search-box) {
+	animation-duration: 0.3s;
+	animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(search-box),
+	::view-transition-new(search-box) {
+		animation: none;
+	}
 }
 
 :root {

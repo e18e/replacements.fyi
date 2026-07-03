@@ -9,7 +9,6 @@
 	.replacements-title {
 		color: var(--text);
 		font-weight: 700;
-		view-transition-name: replacements-title;
 		span {
 			color: var(--subtle);
 		}

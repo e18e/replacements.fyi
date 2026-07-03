@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import FileInput from '$lib/FileInput.svelte';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import PackageSearch from '$lib/PackageSearch.svelte';
 	import { eval_package_json } from '$lib/package-json-scan';
 	import type { PackageJsonScanResult } from '$lib/package-json-scan';
 
@@ -60,11 +60,6 @@
 
 	function package_href(package_name: string) {
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
-	}
-
-	function add_view_transition_name(link: HTMLAnchorElement) {
-		const package_name = link.querySelector<HTMLElement>('.package-name');
-		package_name?.style.setProperty('view-transition-name', 'package-name');
 	}
 
 	function handle_scan_again(event: MouseEvent) {
@@ -190,7 +185,7 @@
 	<meta name="description" content="Scan a package.json for replacements." />
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
+<PackageSearch />
 
 <main class="page">
 	<header class="header">
@@ -263,13 +258,7 @@
 					{#each scan_result.replacements as replacement, i (replacement.dep)}
 						<li style:--i={i}>
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
-							<a
-								onclick={(e) => {
-									add_view_transition_name(e.currentTarget);
-								}}
-								href={package_href(replacement.replacement.moduleName)}
-								class="replacement-link"
-							>
+							<a href={package_href(replacement.replacement.moduleName)} class="replacement-link">
 								<span class="replacement-copy">
 									<span class="package-name">{replacement.dep}</span>
 									<span class="replacement-target"
@@ -317,19 +306,8 @@
 		padding: 2rem;
 	}
 
-	.back-link {
-		color: var(--accent);
-		font-size: 1rem;
-		display: inline-block;
-		margin: 1.5rem;
-	}
-
 	a {
 		text-decoration: none;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
 	}
 
 	.header {

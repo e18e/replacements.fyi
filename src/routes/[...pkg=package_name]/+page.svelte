@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { error } from '@sveltejs/kit';
 	import {
 		all,
@@ -10,7 +9,7 @@
 		type ModuleReplacement
 	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import PackageSearch from '$lib/PackageSearch.svelte';
 	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
 	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
 	import { runtime } from '$lib/runtime.svelte';
@@ -90,7 +89,7 @@
 	<meta name="description" content="Replacements for the '{package_name}' npm package." />
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
+<PackageSearch value={package_name} />
 <main class="page">
 	<header class="pkg-header">
 		<p class="comment">// package</p>
@@ -209,23 +208,8 @@
 		box-sizing: border-box;
 	}
 
-	.pkg {
-		view-transition-name: package-name;
-	}
-
 	a {
 		text-decoration: none;
-	}
-
-	.back-link {
-		color: var(--accent);
-		font-size: 1rem;
-		display: inline-block;
-		margin: 1.5rem;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
 	}
 
 	.comment {
