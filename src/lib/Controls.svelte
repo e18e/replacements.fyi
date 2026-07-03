@@ -47,7 +47,7 @@
 		align-items: center;
 		gap: 0.4rem;
 		padding: 0 0.55rem;
-		height: 30px;
+		height: 28px;
 		font-family: inherit;
 		font-size: 0.7rem;
 		line-height: 1;

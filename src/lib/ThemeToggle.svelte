@@ -39,7 +39,7 @@
 		border-radius: 6px;
 		overflow: hidden;
 		background: var(--surface);
-		height: 30px;
+		height: 28px;
 	}
 
 	.seg {

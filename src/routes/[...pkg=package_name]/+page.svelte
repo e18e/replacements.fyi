@@ -89,7 +89,7 @@
 	<meta name="description" content="Replacements for the '{package_name}' npm package." />
 </svelte:head>
 
-<PackageSearch value={package_name} />
+<PackageSearch variant="url" value={package_name} />
 <main class="page">
 	<header class="pkg-header">
 		<p class="comment">// package</p>
@@ -204,7 +204,7 @@
 		color: var(--text);
 		max-width: 600px;
 		margin: 0 auto;
-		padding: 2rem;
+		padding: 7rem 2rem 2rem;
 		box-sizing: border-box;
 	}
 

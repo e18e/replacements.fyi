@@ -10,9 +10,33 @@
 	animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+@keyframes fade-slide-down {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+}
+
+@keyframes fade-slide-up {
+	to {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+}
+
+::view-transition-old(header-bar) {
+	animation: 0.2s ease-in both fade-slide-up;
+}
+
+::view-transition-new(header-bar) {
+	animation: 0.2s ease-out both fade-slide-down;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	::view-transition-old(search-box),
-	::view-transition-new(search-box) {
+	::view-transition-new(search-box),
+	::view-transition-old(header-bar),
+	::view-transition-new(header-bar) {
 		animation: none;
 	}
 }

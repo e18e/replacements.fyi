@@ -15,7 +15,7 @@
 	<title>{page.status} - replacements.fyi</title>
 </svelte:head>
 
-<PackageSearch value={package_name ?? ''} />
+<PackageSearch variant="url" value={package_name ?? ''} />
 
 <main class="page">
 	<header>
@@ -44,7 +44,7 @@
 		color: var(--text);
 		max-width: 600px;
 		margin: 0 auto;
-		padding: 2rem;
+		padding: 7rem 2rem 2rem;
 		box-sizing: border-box;
 	}
 
