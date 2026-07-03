@@ -30,14 +30,15 @@
 <style>
 	.controls {
 		position: fixed;
-		top: 0.75rem;
-		right: 0.75rem;
+		top: 1rem;
+		right: 1rem;
 		z-index: 100;
 		display: inline-flex;
-		align-items: flex-end;
+		align-items: center;
 		gap: 0.5rem;
 		@media (width <= 420px) {
 			flex-direction: column-reverse;
+			align-items: flex-end;
 		}
 	}
 
@@ -45,7 +46,8 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
-		padding: 0.3rem 0.55rem;
+		padding: 0 0.55rem;
+		height: 30px;
 		font-family: inherit;
 		font-size: 0.7rem;
 		line-height: 1;

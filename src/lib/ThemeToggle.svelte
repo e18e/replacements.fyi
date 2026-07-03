@@ -34,19 +34,23 @@
 <style>
 	.toggle {
 		display: inline-flex;
+		align-items: stretch;
 		border: 1px solid var(--border);
 		border-radius: 6px;
 		overflow: hidden;
 		background: var(--surface);
+		height: 30px;
 	}
 
 	.seg {
+		display: inline-flex;
+		align-items: center;
 		background: none;
 		border: none;
 		color: var(--subtle-contrast);
 		font-family: inherit;
 		font-size: 0.7rem;
-		padding: 0.3rem 0.55rem;
+		padding: 0 0.55rem;
 		cursor: pointer;
 		line-height: 1;
 		transition:

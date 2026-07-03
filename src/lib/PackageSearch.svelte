@@ -73,8 +73,11 @@
 	}
 
 	.search-form.url-bar {
-		margin: 1.5rem;
-		max-width: 600px;
+		margin: 1rem;
+		max-width: 320px;
+		width: 100%;
+		height: 1.85rem;
+		font-size: 0.75rem;
 	}
 
 	.search-form:focus-within {
@@ -89,6 +92,11 @@
 		text-decoration: none;
 		font-size: 0.875rem;
 		white-space: nowrap;
+	}
+
+	.search-form.url-bar .origin {
+		padding: 0.25rem 0 0.25rem 0.5rem;
+		font-size: 0.7rem;
 	}
 
 	.origin span {
@@ -106,7 +114,22 @@
 		padding: 0.625rem 0;
 	}
 
+	.search-form.url-bar .slash {
+		font-size: 0.75rem;
+		padding: 0.25rem 0;
+	}
+
 	.search-form :global(.autocomplete input) {
 		padding-left: 0.25rem;
+	}
+
+	.search-form.url-bar :global(.autocomplete input) {
+		font-size: 0.7rem;
+		padding: 0.25rem;
+	}
+
+	.search-form.url-bar :global(button) {
+		padding: 0.25rem 0.5rem;
+		font-size: 0.7rem;
 	}
 </style>
