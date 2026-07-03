@@ -1,21 +1,12 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { all } from 'module-replacements';
-	import Autocomplete from '$lib/Autocomplete.svelte';
+	import PackageSearch from '$lib/PackageSearch.svelte';
 	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
-	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
-	const packages = Object.keys(all.mappings);
 
 	function package_href(package_name: string) {
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
-	}
-
-	function navigate_to(package_name: string) {
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto(package_href(package_name));
 	}
 </script>
 
@@ -35,29 +26,7 @@
 
 		<p class="tagline">type a package name. we'll tell you what you don't need.</p>
 
-		<form
-			onsubmit={(e) => {
-				e.preventDefault();
-				const form_data = new FormData(e.currentTarget);
-				const package_name = form_data.get('package');
-				if (package_name) {
-					const input = e.currentTarget.querySelector('input')!;
-					input.style.setProperty('view-transition-name', 'package-name');
-					navigate_to(package_name.toString());
-				}
-			}}
-			class="search-form"
-		>
-			<Autocomplete
-				items={packages}
-				placeholder="e.g. is-number"
-				name="package"
-				get_item_href={package_href}
-				on_select_navigate_to={navigate_to}
-				autofocus
-			/>
-			<SingleInputSubmitButton aria-label="Search" />
-		</form>
+		<PackageSearch variant="hero" autofocus />
 
 		<div class="examples">
 			<span class="examples-header">// examples</span>
@@ -118,21 +87,6 @@
 		font-size: 0.875rem;
 		margin: 1.5rem 0 0;
 		line-height: 1.5;
-	}
-
-	.search-form {
-		display: flex;
-		align-items: center;
-		margin-top: 1.5rem;
-		border: 1px solid var(--border-strong);
-		border-radius: 6px;
-		background: var(--input-bg);
-		overflow: visible;
-		transition: border-color 0.15s;
-	}
-
-	.search-form:focus-within {
-		border-color: var(--accent);
 	}
 
 	.examples {

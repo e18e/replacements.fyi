@@ -88,11 +88,46 @@ test.describe('Package detail page', () => {
 		await expect(page.getByText("we don't have a replacement")).toContainText('"@eslint/eslint"');
 	});
 
-	test('back link navigates home', async ({ page }) => {
+	test('home link navigates home', async ({ page }) => {
 		await page.goto('/is-number');
-		// The back link contains "mr.e18e" text
-		await page.locator('.back-link').click();
+		await page.getByRole('link', { name: 'Home' }).click();
 		await expect(page).toHaveURL('/');
+	});
+
+	test('search input is visible and navigates to another package', async ({ page }) => {
+		await page.goto('/is-number');
+		const input = page.locator('input[name="package"]');
+		await expect(input).toBeVisible();
+		await expect(input).toHaveValue('is-number');
+		await input.fill('left-pad');
+		await page.getByRole('button', { name: 'Search' }).click();
+		await expect(page).toHaveURL(/\/left-pad/);
+	});
+
+	test('autocomplete from detail page navigates without going home', async ({ page }) => {
+		await page.goto('/is-number');
+		const input = page.locator('input[name="package"]');
+		await input.fill('is-o');
+		await page.locator('.suggestions a', { hasText: 'is-odd' }).first().click();
+		await expect(page).toHaveURL(/\/is-odd/);
+	});
+	test('search input is visible on 404 page', async ({ page }) => {
+		await page.goto('/this-package-does-not-exist-xyz');
+		const input = page.locator('input[name="package"]');
+		await expect(input).toBeVisible();
+		await expect(input).toHaveValue('this-package-does-not-exist-xyz');
+	});
+});
+
+test.describe('Inner pages search', () => {
+	test('search input is visible on packages page', async ({ page }) => {
+		await page.goto('/packages');
+		await expect(page.locator('input[name="package"]')).toBeVisible();
+	});
+
+	test('search input is visible on package-json page', async ({ page }) => {
+		await page.goto('/package-json');
+		await expect(page.locator('input[name="package"]')).toBeVisible();
 	});
 });
 

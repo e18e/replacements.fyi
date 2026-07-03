@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
 	import FilterInput from '$lib/FilterInput.svelte';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import PackageSearch from '$lib/PackageSearch.svelte';
 
 	const packages = Object.keys(all.mappings).sort();
 
@@ -20,7 +20,7 @@
 	<meta name="description" content="Browse all npm packages with replacements." />
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
+<PackageSearch />
 
 <main class="page">
 	<header class="header">
@@ -37,9 +37,6 @@
 		{#each filtered_packages as pkg (pkg)}
 			<li>
 				<a
-					onclick={(e) => {
-						e.currentTarget.style.setProperty('view-transition-name', 'package-name');
-					}}
 					href={resolve('/[...pkg=package_name]', { pkg })}
 					class="package-link"
 				>
@@ -65,17 +62,6 @@
 
 	a {
 		text-decoration: none;
-	}
-
-	.back-link {
-		color: var(--accent);
-		font-size: 1rem;
-		display: inline-block;
-		margin: 1.5rem;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
 	}
 
 	.header {

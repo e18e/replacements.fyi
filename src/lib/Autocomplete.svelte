@@ -27,12 +27,7 @@
 	let input: HTMLInputElement;
 
 	function select(item: string) {
-		prepare_transition();
 		on_select_navigate_to(item);
-	}
-
-	function prepare_transition() {
-		input.style.setProperty('view-transition-name', 'package-name');
 	}
 
 	function handle_keydown(e: KeyboardEvent) {
@@ -92,7 +87,6 @@
 						class:active={i === active_index}
 						aria-current={i === active_index ? 'true' : undefined}
 						onmousedown={(e) => e.preventDefault()}
-						onclick={prepare_transition}
 					>
 						{item}
 					</a>
