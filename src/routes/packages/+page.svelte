@@ -20,7 +20,7 @@
 	<meta name="description" content="Browse all npm packages with replacements." />
 </svelte:head>
 
-<PackageSearch />
+<PackageSearch variant="url" />
 
 <main class="page">
 	<header class="header">
@@ -54,7 +54,7 @@
 		color: var(--text);
 		max-width: 700px;
 		margin: 0 auto;
-		padding: 2rem;
+		padding: 7rem 2rem 2rem;
 	}
 
 	a {

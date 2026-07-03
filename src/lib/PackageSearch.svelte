@@ -27,34 +27,91 @@
 	}
 </script>
 
-<form
-	class="search-form search-box"
-	class:hero={variant === 'hero'}
-	class:url-bar={variant === 'url'}
-	onsubmit={(e) => {
-		e.preventDefault();
-		const form_data = new FormData(e.currentTarget);
-		const package_name = form_data.get('package');
-		if (package_name) {
-			navigate_to(package_name.toString());
-		}
-	}}
->
-	<a href={resolve('/')} class="origin" aria-label="Home">replacements<span>.fyi</span></a>
-	<span class="slash" aria-hidden="true">/</span>
-	<Autocomplete
-		items={packages}
-		{placeholder}
-		name="package"
-		get_item_href={package_href}
-		on_select_navigate_to={navigate_to}
-		{autofocus}
-		bind:value
-	/>
-	<SingleInputSubmitButton aria-label="Search" />
-</form>
+{#if variant === 'url'}
+	<div class="url-header">
+		<a href={resolve('/')} class="replacements-title" aria-label="Home"
+			>replacements<span>.fyi</span></a
+		>
+		<form
+			class="search-form search-box url-bar"
+			onsubmit={(e) => {
+				e.preventDefault();
+				const form_data = new FormData(e.currentTarget);
+				const package_name = form_data.get('package');
+				if (package_name) {
+					navigate_to(package_name.toString());
+				}
+			}}
+		>
+			<Autocomplete
+				items={packages}
+				{placeholder}
+				name="package"
+				get_item_href={package_href}
+				on_select_navigate_to={navigate_to}
+				{autofocus}
+				bind:value
+			/>
+			<SingleInputSubmitButton aria-label="Search" />
+		</form>
+	</div>
+{:else}
+	<form
+		class="search-form search-box hero"
+		onsubmit={(e) => {
+			e.preventDefault();
+			const form_data = new FormData(e.currentTarget);
+			const package_name = form_data.get('package');
+			if (package_name) {
+				navigate_to(package_name.toString());
+			}
+		}}
+	>
+		<Autocomplete
+			items={packages}
+			{placeholder}
+			name="package"
+			get_item_href={package_href}
+			on_select_navigate_to={navigate_to}
+			{autofocus}
+			bind:value
+		/>
+		<SingleInputSubmitButton aria-label="Search" />
+	</form>
+{/if}
 
 <style>
+	.url-header {
+		position: fixed;
+		top: 1rem;
+		left: 1.5rem;
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		view-transition-name: header-bar;
+	}
+
+	.replacements-title {
+		color: var(--text);
+		font-weight: 700;
+		text-decoration: none;
+		font-size: 0.85rem;
+		line-height: 1;
+		white-space: nowrap;
+		transition: opacity 0.15s;
+	}
+
+	.replacements-title span {
+		color: var(--subtle);
+		font-family: inherit;
+		line-height: 1;
+	}
+
+	.replacements-title:hover {
+		opacity: 0.8;
+	}
+
 	.search-form {
 		display: flex;
 		align-items: center;
@@ -73,40 +130,32 @@
 	}
 
 	.search-form.url-bar {
-		margin: 1.5rem;
-		max-width: 600px;
+		margin: 0;
+		max-width: 260px;
+		width: 100%;
+		height: 28px;
+		font-size: 0.7rem;
 	}
 
 	.search-form:focus-within {
 		border-color: var(--accent);
 	}
 
-	.origin {
-		flex-shrink: 0;
-		padding: 0.625rem 0 0.625rem 0.75rem;
-		color: var(--text);
-		font-weight: 700;
-		text-decoration: none;
-		font-size: 0.875rem;
-		white-space: nowrap;
-	}
-
-	.origin span {
-		color: var(--subtle);
-	}
-
-	.origin:hover {
-		text-decoration: underline;
-	}
-
-	.slash {
-		color: var(--subtle);
-		flex-shrink: 0;
-		font-size: 0.9375rem;
-		padding: 0.625rem 0;
-	}
-
 	.search-form :global(.autocomplete input) {
-		padding-left: 0.25rem;
+		padding-left: 0.5rem;
+	}
+
+	.search-form.url-bar :global(.autocomplete input) {
+		font-size: 0.7rem;
+		padding: 0 0.4rem;
+		height: 100%;
+	}
+
+	.search-form.url-bar :global(button) {
+		padding: 0 0.55rem;
+		font-size: 0.7rem;
+		height: 100%;
+		display: inline-flex;
+		align-items: center;
 	}
 </style>
