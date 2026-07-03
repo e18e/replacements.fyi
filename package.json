@@ -8,7 +8,7 @@
 		"dev": "vite dev",
 		"build": "pnpm clear-build && wrangler types --check && vite build",
 		"preview": "wrangler dev",
-		"prepare": "playwright install && svelte-kit sync || echo ''",
+		"prepare": "svelte-kit sync || echo ''",
 		"check": "wrangler types --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
@@ -17,7 +17,8 @@
 		"test": "pnpm run test:unit -- --run && pnpm run test:e2e",
 		"test:e2e": "playwright test",
 		"gen": "pnpm clear-build && wrangler types",
-		"deploy": "pnpm run build && wrangler deploy"
+		"deploy": "pnpm run build && wrangler deploy --env=\"\"",
+		"deploy:preview": "pnpm run build && wrangler versions --env=\"\" upload"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.4",
