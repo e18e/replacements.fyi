@@ -28,8 +28,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.2.0)
       '@playwright/test':
-        specifier: ^1.59.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       '@remix-run/route-pattern':
         specifier: ^0.21.1
         version: 0.21.1
@@ -47,7 +47,7 @@ importers:
         version: 24.12.2
       '@vitest/browser-playwright':
         specifier: ^4.1.3
-        version: 4.1.4(playwright@1.59.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)
+        version: 4.1.4(playwright@1.61.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)
       eslint:
         specifier: ^10.2.0
         version: 10.2.0
@@ -61,8 +61,8 @@ importers:
         specifier: ^17.4.0
         version: 17.5.0
       playwright:
-        specifier: ^1.59.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       prettier:
         specifier: ^3.8.1
         version: 3.8.3
@@ -565,8 +565,8 @@ packages:
   '@oxc-project/types@0.124.0':
     resolution: {integrity: sha512-VBFWMTBvHxS11Z5Lvlr3IWgrwhMTXV+Md+EQF0Xf60+wAdsGFTBx7X7K/hP4pi8N7dcm1RvcHwDxZ16Qx8keUg==}
 
-  '@playwright/test@1.59.1':
-    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+  '@playwright/test@1.61.1':
+    resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1407,13 +1407,13 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  playwright-core@1.59.1:
-    resolution: {integrity: sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==}
+  playwright-core@1.61.1:
+    resolution: {integrity: sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.59.1:
-    resolution: {integrity: sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==}
+  playwright@1.61.1:
+    resolution: {integrity: sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2155,9 +2155,9 @@ snapshots:
 
   '@oxc-project/types@0.124.0': {}
 
-  '@playwright/test@1.59.1':
+  '@playwright/test@1.61.1':
     dependencies:
-      playwright: 1.59.1
+      playwright: 1.61.1
 
   '@polka/url@1.0.0-next.29': {}
 
@@ -2445,11 +2445,11 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitest/browser-playwright@4.1.4(playwright@1.59.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)':
+  '@vitest/browser-playwright@4.1.4(playwright@1.61.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)':
     dependencies:
       '@vitest/browser': 4.1.4(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)
       '@vitest/mocker': 4.1.4(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))
-      playwright: 1.59.1
+      playwright: 1.61.1
       tinyrainbow: 3.1.0
       vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))
     transitivePeerDependencies:
@@ -2993,11 +2993,11 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  playwright-core@1.59.1: {}
+  playwright-core@1.61.1: {}
 
-  playwright@1.59.1:
+  playwright@1.61.1:
     dependencies:
-      playwright-core: 1.59.1
+      playwright-core: 1.61.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -3342,7 +3342,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.2
-      '@vitest/browser-playwright': 4.1.4(playwright@1.59.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)
+      '@vitest/browser-playwright': 4.1.4(playwright@1.61.1)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.3))(vitest@4.1.4)
     transitivePeerDependencies:
       - msw
 
