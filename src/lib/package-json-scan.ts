@@ -15,8 +15,7 @@ export type PackageJSONScanSuccessResult = {
 };
 
 export type PackageJsonScanResult =
-	| { success: false; error: string }
-	| PackageJSONScanSuccessResult;
+	{ success: false; error: string } | PackageJSONScanSuccessResult;
 
 export function eval_package_json(package_json_string: string): PackageJsonScanResult {
 	let parsed_json: unknown;
