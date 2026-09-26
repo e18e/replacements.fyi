@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { error } from '@sveltejs/kit';
 	import {
-		all,
 		resolveDocUrl,
-		nativeReplacements,
 		type EngineConstraint,
 		type KnownUrl,
 		type ModuleReplacement
 	} from 'module-replacements';
-	import { highlight } from './highlight.remote';
+	import { get_package } from './data.remote';
 	import PackageSearch from '$lib/PackageSearch.svelte';
 	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
 	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
@@ -18,19 +15,7 @@
 
 	let package_name = $derived(params.pkg);
 
-	let mapping = $derived.by(() => {
-		const mapping = all.mappings[package_name];
-		// this should technically never happen since we guard with the
-		// param matched but just to be safe in case we remove the param matcher
-		if (!mapping) {
-			error(404, `Not found`);
-		}
-		return mapping;
-	});
-
-	let resolved_replacements = $derived(
-		mapping.replacements.map((key: string) => ({ key, data: all.replacements[key] }))
-	);
+	let { mapping, resolved_replacements } = $derived(await get_package(package_name));
 
 	let visible_replacements = $derived(
 		resolved_replacements.filter(({ data }) => engines_match_runtime(data.engines, runtime.pref))
@@ -59,10 +44,6 @@
 		if (type === 'documented') return 'Community choice';
 		if (type === 'removal') return 'Just remove it, no replacement needed';
 		return type;
-	}
-
-	function is_in_native_manifest(key: string): boolean {
-		return key in nativeReplacements.replacements;
 	}
 
 	function categorized_engines(engines: EngineConstraint[] | undefined) {
@@ -114,10 +95,10 @@
 			</p>
 		{/if}
 
-		{#each visible_replacements as { key, data } (key)}
+		{#each visible_replacements as { key, data, in_native_manifest, highlighted_example } (key)}
 			<div class="replacement">
 				<h2 class="replacement-id">{key}</h2>
-				<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
+				<span class="badge">{get_type_display_name(data.type, in_native_manifest)}</span>
 
 				{#if data.type === 'native'}
 					<p class="description">
@@ -162,10 +143,10 @@
 					{/if}
 				{:else if data.type === 'simple'}
 					<p class="description">This package is no longer necessary. {data.description}</p>
-					{#if data.example}
+					{#if highlighted_example}
 						<p class="comment">// example</p>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html await highlight(data.example)}
+						{@html highlighted_example}
 					{/if}
 				{:else if data.type === 'removal'}
 					<p class="description">This package is no longer necessary. {data.description}</p>
