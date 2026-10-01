@@ -8,7 +8,23 @@
 	function package_href(package_name: string) {
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
+
+	function handle_dragover(event: DragEvent) {
+		if (Array.from(event.dataTransfer?.types ?? []).includes('Files')) {
+			event.preventDefault();
+		}
+	}
+
+	async function handle_drop(event: DragEvent) {
+		const file = event.dataTransfer?.files[0];
+		if (file && file.type === 'application/json') {
+			event.preventDefault();
+			goto(resolve('/package-json'), { state: { package_json: await file.text() } });
+		}
+	}
 </script>
+
+<svelte:window ondragover={handle_dragover} ondrop={handle_drop} />
 
 <main class="page">
 	<div class="container">
