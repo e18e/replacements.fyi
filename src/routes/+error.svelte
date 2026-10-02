@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import PackageSearch from '$lib/PackageSearch.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
 
 	const error_message = $derived(page.error?.message ?? 'An error occurred');
 	const package_name = $derived.by(() => {

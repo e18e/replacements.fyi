@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import PackageSearch from '$lib/PackageSearch.svelte';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
+	import ReplacementsTitle from '#lib/ReplacementsTitle.svelte';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 
@@ -42,8 +42,9 @@
 			>powered by e18e.dev</a
 		>
 
-		<a href={resolve('/packages')} class="all-packages-link">Browse all packages →</a>
-		<a href={resolve('/package-json')} class="all-packages-link">Scan package.json →</a>
+		<a href={resolve('packages')} class="all-packages-link">Browse all packages →</a>
+
+		<a href={resolve('package-json')} class="all-packages-link">Scan package.json →</a>
 	</div>
 </main>
 

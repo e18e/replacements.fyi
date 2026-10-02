@@ -1,4 +1,4 @@
-import { get_github_info } from '$lib/utils';
+import { get_github_info } from '#lib/utils.js';
 import { redirect } from '@sveltejs/kit';
 
 export const prerender = false;

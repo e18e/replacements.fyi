@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import FileInput from '$lib/FileInput.svelte';
-	import PackageSearch from '$lib/PackageSearch.svelte';
-	import { eval_package_json } from '$lib/package-json-scan';
-	import type { PackageJsonScanResult } from '$lib/package-json-scan';
+	import FileInput from '#lib/FileInput.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
+	import { eval_package_json } from '#lib/package-json-scan.js';
+	import type { PackageJsonScanResult } from '#lib/package-json-scan.js';
 
 	import { scan_package_json_file } from './data.remote';
 	import { get_repo_package_json } from './github.remote';
@@ -207,13 +207,14 @@
 	>
 		{#if scan_result && !scan_error && !dragging_file}
 			<p class="scan-again-copy">
-				<a href={resolve('/package-json')} onclick={handle_scan_again}>Click here</a> to scan another
-				package.json, or paste/drop one onto this page.
+				<a href={resolve('package-json')} onclick={handle_scan_again}>Click here</a>
+
+				to scan another package.json, or paste/drop one onto this page.
 			</p>
 		{:else}
 			<div class="package-json-upload">
 				<FileInput
-					name="package_json"
+					{...scan_package_json_file.fields.package_json.as('file')}
 					required
 					accept="application/json,.json"
 					placeholder={!file_name}
@@ -289,7 +290,7 @@
 							No packages with native replacements or more performant alternatives were found. Nice
 							work.
 						</p>
-						<a href={resolve('/packages')} class="empty-link">Browse all known replacements →</a>
+						<a href={resolve('packages')} class="empty-link">Browse all known replacements →</a>
 					</div>
 				</div>
 			{/if}

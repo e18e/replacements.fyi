@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
-	import Autocomplete from '$lib/Autocomplete.svelte';
-	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
+	import Autocomplete from '#lib/Autocomplete.svelte';
+	import SingleInputSubmitButton from '#lib/SingleInputSubmitButton.svelte';
 
 	type Props = {
 		variant?: 'hero' | 'url';
@@ -21,9 +21,14 @@
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
 
-	function navigate_to(package_name: string) {
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto(package_href(package_name));
+	async function navigate_to(package_name: string) {
+		const href = package_href(package_name);
+		try {
+			await goto(href);
+		} catch {
+			// Unknown packages don't match a route; let the server render the 404 page.
+			window.location.href = href;
+		}
 	}
 </script>
 

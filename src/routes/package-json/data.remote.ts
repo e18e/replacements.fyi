@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 import { form } from '$app/server';
 import { invalid } from '@sveltejs/kit';
-import { eval_package_json } from '$lib/package-json-scan';
+import { eval_package_json } from '#lib/package-json-scan.js';
 
 const package_json_schema = v.pipe(
 	v.file('Please select a package.json file.'),

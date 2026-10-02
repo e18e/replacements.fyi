@@ -1,4 +1,4 @@
-import type { Navigation } from '@sveltejs/kit';
+import type { Navigation } from '$app/navigation';
 
 export function is_search_bar_morph({ from, to }: Navigation): boolean {
 	const from_home = from?.route?.id === '/';

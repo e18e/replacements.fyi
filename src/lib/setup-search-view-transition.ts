@@ -1,6 +1,6 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { onNavigate } from '$app/navigation';
-import { is_search_bar_morph } from '$lib/search-transition';
+import { is_search_bar_morph } from '#lib/search-transition.js';
 
 // Search-bar morph on home ↔ inner pages is inspired by npmx.dev:
 // https://github.com/npmx-dev/npmx.dev/blob/master/app/plugins/view-transitions.client.ts

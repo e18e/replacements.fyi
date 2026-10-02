@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { runtime, runtimes, type Runtime } from '$lib/runtime.svelte';
+	import { runtime, runtimes, type Runtime } from '#lib/runtime.svelte.js';
 </script>
 
 <label class="field">
