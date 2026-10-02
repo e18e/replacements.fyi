@@ -1,5 +1,5 @@
 import { all } from 'module-replacements';
-import { error, json } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 export const prerender = true;
 
@@ -12,7 +12,7 @@ export function GET({ params: { package: name, scope } }) {
 
 	const replacements = mapping.replacements.map((key) => all.replacements[key]);
 
-	return json({
+	return Response.json({
 		name: mapping.moduleName,
 		type: mapping.type,
 		url: mapping.url,
