@@ -8,7 +8,7 @@ import globals from 'globals';
 import ts from 'typescript-eslint';
 import { loadConfig } from '@sveltejs/load-config';
 
-const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
+const svelte_config = (await loadConfig('./', { traverse: false }))?.config;
 
 const gitignore_path = path.resolve(import.meta.dirname, '.gitignore');
 
@@ -52,7 +52,7 @@ export default defineConfig(
 				projectService: true,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
-				svelteConfig
+				svelteConfig: svelte_config
 			}
 		}
 	},
