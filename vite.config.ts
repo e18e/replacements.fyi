@@ -25,7 +25,7 @@ export default defineConfig({
 					])
 				]
 			},
-			paths: { origin: 'https://replacements.fyi' }
+			paths: { origin: process.env.APP_ORIGIN ?? 'https://replacements.fyi' }
 		})
 	],
 	test: {
