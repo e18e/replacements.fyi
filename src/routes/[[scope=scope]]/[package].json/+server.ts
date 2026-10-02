@@ -6,7 +6,7 @@ export const prerender = true;
 export function GET({ params: { package: name, scope } }) {
 	const full = `${scope ? `${scope}/` : ''}${name}`;
 	if (!Object.hasOwn(all.mappings, full)) {
-		throw error(404, `No replacement found for "${full}"`);
+		error(404, `No replacement found for "${full}"`);
 	}
 	const mapping = all.mappings[full];
 
