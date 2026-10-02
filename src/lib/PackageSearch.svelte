@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
-	import Autocomplete from '$lib/Autocomplete.svelte';
-	import SingleInputSubmitButton from '$lib/SingleInputSubmitButton.svelte';
+	import Autocomplete from '#lib/Autocomplete.svelte';
+	import SingleInputSubmitButton from '#lib/SingleInputSubmitButton.svelte';
 
 	type Props = {
 		variant?: 'hero' | 'url';

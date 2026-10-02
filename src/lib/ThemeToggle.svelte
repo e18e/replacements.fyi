@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { theme, type ThemePref } from '$lib/theme.svelte';
+	import { theme, type ThemePref } from '#lib/theme.svelte.js';
 
 	const options: { value: ThemePref; label: string }[] = [
 		{ value: 'light', label: 'light' },

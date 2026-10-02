@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
-	import FilterInput from '$lib/FilterInput.svelte';
-	import PackageSearch from '$lib/PackageSearch.svelte';
+	import FilterInput from '#lib/FilterInput.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
 
 	const packages = Object.keys(all.mappings).sort();
 

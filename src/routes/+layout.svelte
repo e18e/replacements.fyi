@@ -6,9 +6,9 @@
 	import '@fontsource/ibm-plex-mono/500.css';
 	import '@fontsource/ibm-plex-mono/600.css';
 	import '@fontsource/ibm-plex-mono/700.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import Controls from '$lib/Controls.svelte';
-	import { setup_search_view_transition } from '$lib/setup-search-view-transition';
+	import favicon from '#lib/assets/favicon.svg';
+	import Controls from '#lib/Controls.svelte';
+	import { setup_search_view_transition } from '#lib/setup-search-view-transition.js';
 	import './global.css';
 
 	setup_search_view_transition();

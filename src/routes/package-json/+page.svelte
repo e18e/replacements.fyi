@@ -2,10 +2,10 @@
 	import { browser } from '$app/env';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import FileInput from '$lib/FileInput.svelte';
-	import PackageSearch from '$lib/PackageSearch.svelte';
-	import { eval_package_json } from '$lib/package-json-scan';
-	import type { PackageJsonScanResult } from '$lib/package-json-scan';
+	import FileInput from '#lib/FileInput.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
+	import { eval_package_json } from '#lib/package-json-scan.js';
+	import type { PackageJsonScanResult } from '#lib/package-json-scan.js';
 
 	import { scan_package_json_file } from './data.remote';
 	import { get_repo_package_json } from './github.remote';

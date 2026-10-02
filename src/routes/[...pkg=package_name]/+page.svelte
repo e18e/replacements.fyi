@@ -6,10 +6,10 @@
 		type ModuleReplacement
 	} from 'module-replacements';
 	import { get_package } from './data.remote';
-	import PackageSearch from '$lib/PackageSearch.svelte';
-	import RuntimeToggle from '$lib/RuntimeToggle.svelte';
-	import { browser_engines, runtime_engines, engines_match_runtime } from '$lib/engines';
-	import { runtime } from '$lib/runtime.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
+	import RuntimeToggle from '#lib/RuntimeToggle.svelte';
+	import { browser_engines, runtime_engines, engines_match_runtime } from '#lib/engines.js';
+	import { runtime } from '#lib/runtime.svelte.js';
 
 	let { params } = $props();
 

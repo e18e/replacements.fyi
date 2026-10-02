@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import PackageSearch from '$lib/PackageSearch.svelte';
-	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
+	import PackageSearch from '#lib/PackageSearch.svelte';
+	import ReplacementsTitle from '#lib/ReplacementsTitle.svelte';
 
 	const examples = ['is-number', 'left-pad', 'is-odd', 'object-assign'];
 
