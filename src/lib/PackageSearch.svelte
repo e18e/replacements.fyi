@@ -21,9 +21,14 @@
 		return resolve('/[...pkg=package_name]', { pkg: package_name });
 	}
 
-	function navigate_to(package_name: string) {
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto(package_href(package_name));
+	async function navigate_to(package_name: string) {
+		const href = package_href(package_name);
+		try {
+			await goto(href);
+		} catch {
+			// Unknown packages don't match a route; let the server render the 404 page.
+			window.location.href = href;
+		}
 	}
 </script>
 
