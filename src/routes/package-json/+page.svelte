@@ -207,8 +207,9 @@
 	>
 		{#if scan_result && !scan_error && !dragging_file}
 			<p class="scan-again-copy">
-				<a href={resolve('/package-json')} onclick={handle_scan_again}>Click here</a> to scan another
-				package.json, or paste/drop one onto this page.
+				<a href={resolve('package-json')} onclick={handle_scan_again}>Click here</a>
+
+				to scan another package.json, or paste/drop one onto this page.
 			</p>
 		{:else}
 			<div class="package-json-upload">
@@ -289,7 +290,7 @@
 							No packages with native replacements or more performant alternatives were found. Nice
 							work.
 						</p>
-						<a href={resolve('/packages')} class="empty-link">Browse all known replacements →</a>
+						<a href={resolve('packages')} class="empty-link">Browse all known replacements →</a>
 					</div>
 				</div>
 			{/if}
