@@ -214,7 +214,7 @@
 		{:else}
 			<div class="package-json-upload">
 				<FileInput
-					name="package_json"
+					{...scan_package_json_file.fields.package_json.as('file')}
 					required
 					accept="application/json,.json"
 					placeholder={!file_name}

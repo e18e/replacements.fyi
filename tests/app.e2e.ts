@@ -58,6 +58,20 @@ test.describe('Home page', () => {
 		await page.getByRole('button', { name: 'Search' }).click();
 		await expect(page).toHaveURL(/\/is-number/);
 	});
+
+	for (const package_name of ['this-package-does-not-exist-xyz', '@eslint/eslint']) {
+		test(`searching for ${package_name} shows the not found page`, async ({ page }) => {
+			const errors: Error[] = [];
+			page.on('pageerror', (error) => errors.push(error));
+			await page.goto('/');
+			await page.locator('input[name="package"]').fill(package_name);
+			await page.getByRole('button', { name: 'Search' }).click();
+			await expect(page.getByText("we don't have a replacement")).toContainText(
+				`"${package_name}"`
+			);
+			expect(errors).toEqual([]);
+		});
+	}
 });
 
 test.describe('Package detail page', () => {
@@ -176,7 +190,6 @@ test.describe('Package JSON scanner', () => {
 
 	test('loads with package.json form', async ({ page }) => {
 		await page.goto('/package-json');
-		await expect(page.locator('input[name="package_json"]')).toBeVisible();
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await expect(page.getByText('Drag a file or')).toBeVisible();
 		await expect(page.getByText('Select Here')).toBeVisible();
@@ -207,7 +220,7 @@ test.describe('Package JSON scanner', () => {
 
 	test('finds replacements after file upload', async ({ page }) => {
 		await page.goto('/package-json');
-		await page.locator('input[name="package_json"]').setInputFiles({
+		await page.getByLabel('Upload package.json').setInputFiles({
 			name: 'package.json',
 			mimeType: 'application/json',
 			buffer: Buffer.from(
@@ -220,7 +233,7 @@ test.describe('Package JSON scanner', () => {
 			)
 		});
 
-		await expect(page.locator('input[name="package_json"]')).toHaveCount(0);
+		await expect(page.getByLabel('Upload package.json')).toHaveCount(0);
 		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
 	});
 
@@ -243,7 +256,7 @@ test.describe('Package JSON scanner', () => {
 		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toHaveCount(0);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 
-		await page.locator('input[name="package_json"]').setInputFiles({
+		await page.getByLabel('Upload package.json').setInputFiles({
 			name: 'package.json',
 			mimeType: 'application/json',
 			buffer: Buffer.from(
@@ -326,7 +339,7 @@ test.describe('Package JSON scanner', () => {
 		).toBeVisible();
 	});
 
-	test('shows a submit button when JavaScript is disabled but only when a file is selected', async ({
+	test('scans an uploaded file without JavaScript and only shows submit after selecting a file', async ({
 		browser
 	}) => {
 		const context = await browser.newContext({ javaScriptEnabled: false });
@@ -335,7 +348,7 @@ test.describe('Package JSON scanner', () => {
 		await page.goto('/package-json');
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).not.toBeVisible();
 
-		await page.locator('input[name="package_json"]').setInputFiles({
+		await page.getByLabel('Upload package.json').setInputFiles({
 			name: 'package.json',
 			mimeType: 'application/json',
 			buffer: Buffer.from(
@@ -349,6 +362,9 @@ test.describe('Package JSON scanner', () => {
 		});
 
 		await expect(page.getByRole('button', { name: 'Scan package.json' })).toBeVisible();
+		await page.getByRole('button', { name: 'Scan package.json' }).press('Enter');
+		await expect(page.getByRole('heading', { name: 'Found 1 replacements' })).toBeVisible();
+		await expect(page.getByRole('link', { name: /body-parser/ })).toBeVisible();
 
 		await context.close();
 	});
