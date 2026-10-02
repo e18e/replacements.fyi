@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 test.describe('Home page', () => {
 	test('loads with search form and example links', async ({ page }) => {
@@ -146,6 +146,13 @@ test.describe('Inner pages search', () => {
 });
 
 test.describe('Package JSON scanner', () => {
+	async function open_scanner(page: Page) {
+		await page.goto('/package-json');
+		// The input is visible in SSR HTML, before paste/change listeners are attached.
+		// This class is added by the component's `browser` flag during hydration.
+		await expect(page.locator('.scan-submit-row')).toHaveClass(/\bbrowser\b/);
+	}
+
 	async function paste_package_json(page: import('@playwright/test').Page, package_json: unknown) {
 		const paste_dispatched = await page.evaluate((text) => {
 			const data_transfer = new DataTransfer();
@@ -189,7 +196,7 @@ test.describe('Package JSON scanner', () => {
 	}
 
 	test('loads with package.json form', async ({ page }) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await expect(page.getByText('Drag a file or')).toBeVisible();
 		await expect(page.getByText('Select Here')).toBeVisible();
@@ -197,7 +204,7 @@ test.describe('Package JSON scanner', () => {
 	});
 
 	test('finds replacements from pasted package.json dependencies', async ({ page }) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'express',
@@ -219,7 +226,7 @@ test.describe('Package JSON scanner', () => {
 	});
 
 	test('finds replacements after file upload', async ({ page }) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await page.getByLabel('Upload package.json').setInputFiles({
 			name: 'package.json',
 			mimeType: 'application/json',
@@ -240,7 +247,7 @@ test.describe('Package JSON scanner', () => {
 	test('can scan another package.json by clicking, pasting, and dropping again', async ({
 		page
 	}) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'express',
@@ -297,7 +304,7 @@ test.describe('Package JSON scanner', () => {
 	});
 
 	test('clears previous scan results after navigating away and back', async ({ page }) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'express',
@@ -317,7 +324,7 @@ test.describe('Package JSON scanner', () => {
 	});
 
 	test('celebrates when pasted package.json has no replacements', async ({ page }) => {
-		await page.goto('/package-json');
+		await open_scanner(page);
 		await expect(page.getByLabel('Upload package.json')).toBeVisible();
 		await paste_package_json(page, {
 			name: 'clean-package',
