@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { onNavigate } from '$app/navigation';
 import { is_search_bar_morph } from '$lib/search-transition';
 
