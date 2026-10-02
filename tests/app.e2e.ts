@@ -18,16 +18,17 @@ test.describe('Home page', () => {
 		await expect(link).toHaveAttribute('href', /e18e\.dev/);
 	});
 
-	test('has package navigation links', async ({ page }) => {
+	test('has quick navigation group links', async ({ page }) => {
 		await page.goto('/');
-		await expect(page.getByRole('link', { name: 'Browse all packages →' })).toHaveAttribute(
+		const nav_group = page.getByRole('group', { name: 'Quick Navigation' });
+		await expect(nav_group.getByRole('link', { name: 'Browse all', exact: true })).toHaveAttribute(
 			'href',
 			'/packages'
 		);
-		await expect(page.getByRole('link', { name: 'Scan package.json →' })).toHaveAttribute(
-			'href',
-			'/package-json'
-		);
+		await expect(
+			nav_group.getByRole('link', { name: 'Scan package.json', exact: true })
+		).toHaveAttribute('href', '/package-json');
+		await expect(nav_group.getByRole('link', { name: "I'm feeling lucky" })).toBeVisible();
 	});
 
 	test('typing in search shows autocomplete suggestions', async ({ page }) => {
@@ -297,7 +298,7 @@ test.describe('Package JSON scanner', () => {
 
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toBeVisible();
 		await page.goto('/');
-		await page.getByRole('link', { name: 'Scan package.json →' }).click();
+		await page.getByRole('link', { name: 'Scan package.json' }).click();
 
 		await expect(page.getByRole('heading', { name: 'Found 3 replacements' })).toHaveCount(0);
 		await expect(page.getByText('Paste the content of your package.json or')).toBeVisible();
